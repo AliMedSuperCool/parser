@@ -3,6 +3,8 @@ import time
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+
+from page_parser import parse_page
 from write_data_to_csv import write_data
 
 st_accept = "text/html"
@@ -13,58 +15,24 @@ headers = {
 }
 
 
-def parse_page(html_content) -> dict:
-    data = {
-        "vuz": {
-            "long_name": "Московский государственный университет имени М.В. Ломоносова",
-            "short_name": "МГУ",
-            "geolocation": "Москва",
-            "is_goverment": "Гос.вуз",
-            "rating": "A",
-            "logo": "http://example.com/logo.png",
-            "website": "http://example.com"
-        },
-        "programs": [
-            {
-                "direction": "Педагогическое образование",
-                "profile": "Математическое обеспечение и администрирование",
-                "program_code": "44.03.01",
-                "vuz": "МГУ",
-                "faculty": "Факультет Математики",
-                "exams": [['РЯ'], ['M'], ['О']],
-                "forms": [
-                    {
-                        "scores": [['139', 'заоч.']],
-                        "education_form": "заочное",
-                        "free_places": 10,
-                        "average_score": 92.5,
-                        "olympic": "No data",
-                        "price": 200000
-                    }
-                ]
 
-            }
-        ]
-    }
-
-    return data
-
-
-def get_html_content(url: str) -> BeautifulSoup:
+def get_html_content(url: str) -> str:
     req = requests.get(url, headers)
     src = req.text
-    soup = BeautifulSoup(src, 'html.parser')
-    return soup
+    # soup = BeautifulSoup(src, 'html.parser')
+    return src
 
 
 def parse():
-    data_links = pd.read_csv('vizu_lins.csv')
+    data_links = pd.read_csv('data/vizu_lins.csv')
     for index, data_link in data_links.iterrows():
         html_content = get_html_content(data_link[0])
         data = parse_page(html_content)
-        write_data(data)
+        print(data)
+        # write_data(data)
         print(index)
-        time.sleep(10)  # FIX: почему 10
+        break
+        # time.sleep(10)  # FIX: почему 10
 
 
 parse()
