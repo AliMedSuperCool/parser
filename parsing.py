@@ -18,12 +18,12 @@ headers = {
 
 def get_html_content(url: str) -> str:
     req = requests.get(url, headers)
-    print(req)
+    # print(req)
     src = req.text
-    print(src)
-    soup = BeautifulSoup(src, 'html.parser')
-    print(soup)
-    # return src
+    # print(src)
+    # soup = BeautifulSoup(src, 'html.parser')
+    # print(soup)
+    return src
 
 
 def parse():
@@ -31,9 +31,10 @@ def parse():
     for index, data_link in data_links.iterrows():
         html_content = get_html_content(data_link[0])
         data = parse_page(html_content)
+        print(html_content)
         print(data)
         # write_data(data)
-        print(index)
+        # print(index)
         break
         # time.sleep(10)  # FIX: почему 10
 

@@ -10,15 +10,15 @@ from page_parser.utils import extract_element, extract_inner_text, extract_some_
 def parse_programs_info(soup, all_page):
     cards = ""
 
-    if (soup.find(class_="more")):
+    if (True):
         # URL для POST-запроса
         url = "https://tabiturient.ru/ajax/ajspec.php"
-        target_div = soup.find("div", class_="mobpadd20 morediv moredivw")
+        target_div = soup.find("select", class_="search")
         vuz_id = -1
         # Если div найден
         if target_div:
             # Извлекаем атрибут onclick
-            onclick_attr = target_div.get("onclick", "")
+            onclick_attr = target_div.get("onchange", "")
 
             # Используем регулярное выражение для извлечения параметров функции showspec
             match = re.search(r"showspec\('([^']+)','([^']+)','([^']+)'", onclick_attr)

@@ -1,0 +1,903 @@
+{
+  'vuz': {
+    'short_name': 'АГАТУ',
+    'long_name': 'Арктический государственный агротехнологический университет',
+    'geolocation': 'Республика Саха (Якутия)',
+    'is_goverment': 'Гос.вуз',
+    'rating': 'C',
+    'logo': 'https://tabiturient.ru/logovuz/agatu.png',
+    'website': 'http://www.agatu.ru/'
+  },
+  'programs': [
+    {
+      'direction': 'Биология',
+      'education_form': 'Бакалавриат',
+      'program_code': '06.03.01',
+      'profile': 'Охотоведение',
+      'vuz': 'АГАТУ',
+      'faculty': 'Факультет ветеринарной медицины',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'Б'
+        ],
+        [
+          'ИКТ',
+          'M'
+        ]
+      ],
+      'scores': [
+        [
+          '139',
+          'очно'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '139',
+          'free_places': '14',
+          'average_score': '149',
+          'olympic': 'no data',
+          'price': -319100
+        }
+      ]
+    },
+    {
+      'direction': 'Информационные системы и технологии',
+      'education_form': 'Бакалавриат',
+      'program_code': '09.03.02',
+      'profile': 'Управление аграрными проектами в области информационных технологий',
+      'vuz': 'АГАТУ',
+      'faculty': 'Инженерный факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'ИЯ'
+        ]
+      ],
+      'scores': [
+        [
+          '162',
+          'очно'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '162',
+          'free_places': '15',
+          'average_score': '173',
+          'olympic': 'no data',
+          'price': -319100
+        }
+      ]
+    },
+    {
+      'direction': 'Теплоэнергетика и теплотехника',
+      'education_form': 'Бакалавриат',
+      'program_code': '13.03.01',
+      'profile': 'Энергетика теплотехнологии',
+      'vuz': 'АГАТУ',
+      'faculty': 'Инженерный факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'Ф'
+        ]
+      ],
+      'scores': [],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Электроэнергетика и электротехника',
+      'education_form': 'Бакалавриат',
+      'program_code': '13.03.02',
+      'profile': 'Электрооборудование и электрохозяйство предприятий, организаций и учреждений',
+      'vuz': 'АГАТУ',
+      'faculty': 'Инженерный факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'Ф'
+        ]
+      ],
+      'scores': [],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Технологические машины и оборудование',
+      'education_form': 'Бакалавриат',
+      'program_code': '15.03.02',
+      'profile': 'Машины и аппараты пищевых производств',
+      'vuz': 'АГАТУ',
+      'faculty': 'Инженерный факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'Ф'
+        ]
+      ],
+      'scores': [],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Технология продукции и организация общественного питания',
+      'education_form': 'Бакалавриат',
+      'program_code': '19.03.04',
+      'profile': 'Без профиля',
+      'vuz': 'АГАТУ',
+      'faculty': 'Агротехнологический факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'Б',
+          'Ф'
+        ]
+      ],
+      'scores': [
+        [
+          '153',
+          'очно'
+        ],
+        [
+          '142',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '153',
+          'free_places': '15',
+          'average_score': '171',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '142',
+          'free_places': '15',
+          'average_score': '171',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Природообустройство и водопользование',
+      'education_form': 'Бакалавриат',
+      'program_code': '20.03.02',
+      'profile': 'Инженерные системы водоснабжения и водоотведения',
+      'vuz': 'АГАТУ',
+      'faculty': 'Инженерный факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'Ф',
+          'Х'
+        ]
+      ],
+      'scores': [
+        [
+          '109',
+          'очно'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '109',
+          'free_places': '15',
+          'average_score': '139',
+          'olympic': 'no data',
+          'price': -319100
+        }
+      ]
+    },
+    {
+      'direction': 'Землеустройство и кадастры',
+      'education_form': 'Бакалавриат',
+      'program_code': '21.03.02',
+      'profile': 'Управление земельными ресурсами',
+      'vuz': 'АГАТУ',
+      'faculty': 'Факультет лесного комплекса и землеустройства',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'Х'
+        ]
+      ],
+      'scores': [
+        [
+          '124',
+          'очно'
+        ],
+        [
+          '176',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '124',
+          'free_places': '19',
+          'average_score': '164',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '176',
+          'free_places': '26',
+          'average_score': '164',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Лесное дело',
+      'education_form': 'Бакалавриат',
+      'program_code': '35.03.01',
+      'profile': 'Рациональное многоцелевое использование лесов',
+      'vuz': 'АГАТУ',
+      'faculty': 'Факультет лесного комплекса и землеустройства',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'Б',
+          'ИКТ'
+        ]
+      ],
+      'scores': [
+        [
+          '146',
+          'очно'
+        ],
+        [
+          '164',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '146',
+          'free_places': '22',
+          'average_score': '171',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '164',
+          'free_places': '20',
+          'average_score': '171',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Технология лесозаготовительных и деревоперерабатывающих производств',
+      'education_form': 'Бакалавриат',
+      'program_code': '35.03.02',
+      'profile': 'Лесоинженерное дело',
+      'vuz': 'АГАТУ',
+      'faculty': 'Факультет лесного комплекса и землеустройства',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'Ф'
+        ]
+      ],
+      'scores': [
+        [
+          '106',
+          'очно'
+        ],
+        [
+          '127',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '106',
+          'free_places': '22',
+          'average_score': '138',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '127',
+          'free_places': '16',
+          'average_score': '138',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Агрономия',
+      'education_form': 'Бакалавриат',
+      'program_code': '35.03.04',
+      'profile': 'Агробизнес',
+      'vuz': 'АГАТУ',
+      'faculty': 'Факультет лесного комплекса и землеустройства',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'Ф'
+        ]
+      ],
+      'scores': [
+        [
+          '125',
+          'очно'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '125',
+          'free_places': '20',
+          'average_score': '145',
+          'olympic': 'no data',
+          'price': -319100
+        }
+      ]
+    },
+    {
+      'direction': 'Агроинженерия',
+      'education_form': 'Бакалавриат',
+      'program_code': '35.03.06',
+      'profile': 'Электрооборудование и электротехнологии',
+      'vuz': 'АГАТУ',
+      'faculty': 'Инженерный факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'Ф',
+          'Х'
+        ]
+      ],
+      'scores': [
+        [
+          '117',
+          'очно'
+        ],
+        [
+          '145',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '117',
+          'free_places': '23',
+          'average_score': '146',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '145',
+          'free_places': '21',
+          'average_score': '146',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Агроинженерия',
+      'education_form': 'Бакалавриат',
+      'program_code': '35.03.06',
+      'profile': 'Технический сервис в агропромышленном комплексе',
+      'vuz': 'АГАТУ',
+      'faculty': 'Инженерный факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'Ф'
+        ]
+      ],
+      'scores': [
+        [
+          '116',
+          'очно'
+        ],
+        [
+          '135',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '116',
+          'free_places': '22',
+          'average_score': '143',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '135',
+          'free_places': '21',
+          'average_score': '143',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Технология производства и переработки сельскохозяйственной продукции',
+      'education_form': 'Бакалавриат',
+      'program_code': '35.03.07',
+      'profile': 'Технология производства и переработки продукции животноводства',
+      'vuz': 'АГАТУ',
+      'faculty': 'Агротехнологический факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'Б',
+          'ИКТ'
+        ]
+      ],
+      'scores': [
+        [
+          '130',
+          'очно'
+        ],
+        [
+          '121',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '130',
+          'free_places': '22',
+          'average_score': '155',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '121',
+          'free_places': '15',
+          'average_score': '155',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Ландшафтная архитектура',
+      'education_form': 'Бакалавриат',
+      'program_code': '35.03.10',
+      'profile': 'Садово-парковое и ландшафтное строительство',
+      'vuz': 'АГАТУ',
+      'faculty': 'Факультет лесного комплекса и землеустройства',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИКТ',
+          'Ф'
+        ]
+      ],
+      'scores': [
+        [
+          '131',
+          'очно'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '131',
+          'free_places': '22',
+          'average_score': '162',
+          'olympic': 'no data',
+          'price': -319100
+        }
+      ]
+    },
+    {
+      'direction': 'Ветеринарно-санитарная экспертиза',
+      'education_form': 'Бакалавриат',
+      'program_code': '36.03.01',
+      'profile': 'Ветеринарно-санитарный эксперт',
+      'vuz': 'АГАТУ',
+      'faculty': 'Факультет ветеринарной медицины',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'Б'
+        ],
+        [
+          'M',
+          'Х'
+        ]
+      ],
+      'scores': [
+        [
+          '132',
+          'очно'
+        ],
+        [
+          '129',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '132',
+          'free_places': '25',
+          'average_score': '156',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '129',
+          'free_places': '15',
+          'average_score': '156',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Зоотехния',
+      'education_form': 'Бакалавриат',
+      'program_code': '36.03.02',
+      'profile': 'Традиционные отрасли Севера',
+      'vuz': 'АГАТУ',
+      'faculty': 'Агротехнологический факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'Б',
+          'Ф'
+        ]
+      ],
+      'scores': [
+        [
+          '135',
+          'очно'
+        ],
+        [
+          '155',
+          'заоч.'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '135',
+          'free_places': '20',
+          'average_score': '155',
+          'olympic': 'no data',
+          'price': -319100
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': '155',
+          'free_places': '15',
+          'average_score': '155',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    },
+    {
+      'direction': 'Экономика',
+      'education_form': 'Бакалавриат',
+      'program_code': '38.03.01',
+      'profile': 'Экономика и бизнес-планирование в АПК',
+      'vuz': 'АГАТУ',
+      'faculty': 'Экономический факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'И',
+          'О'
+        ]
+      ],
+      'scores': [],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -287810
+        },
+        {
+          'education_form2': 'Очно-заочная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -99000
+        }
+      ]
+    },
+    {
+      'direction': 'Менеджмент',
+      'education_form': 'Бакалавриат',
+      'program_code': '38.03.02',
+      'profile': 'Финансово-проектный менеджмент в АПК',
+      'vuz': 'АГАТУ',
+      'faculty': 'Экономический факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'И',
+          'О'
+        ]
+      ],
+      'scores': [],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -287810
+        },
+        {
+          'education_form2': 'Очно-заочная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -99000
+        }
+      ]
+    },
+    {
+      'direction': 'Торговое дело',
+      'education_form': 'Бакалавриат',
+      'program_code': '38.03.06',
+      'profile': 'Организация коммерческой деятельности в аграрной сфере',
+      'vuz': 'АГАТУ',
+      'faculty': 'Экономический факультет',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'M'
+        ],
+        [
+          'ИЯ',
+          'О'
+        ]
+      ],
+      'scores': [],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -287810
+        },
+        {
+          'education_form2': 'Очно-заочная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': 'no data',
+          'olympic': 'no data',
+          'price': -99000
+        }
+      ]
+    },
+    {
+      'direction': 'Ветеринария',
+      'education_form': 'Специалитет',
+      'program_code': '36.05.01',
+      'profile': 'Без профиля',
+      'vuz': 'АГАТУ',
+      'faculty': 'Факультет ветеринарной медицины',
+      'exams': [
+        [
+          'РЯ'
+        ],
+        [
+          'Б'
+        ],
+        [
+          'M',
+          'Ф'
+        ]
+      ],
+      'scores': [
+        [
+          '129',
+          'очно'
+        ]
+      ],
+      'forms': [
+        {
+          'education_form2': 'Очная',
+          'score': '129',
+          'free_places': '40',
+          'average_score': '161',
+          'olympic': 'no data',
+          'price': -310600
+        },
+        {
+          'education_form2': 'Заочная',
+          'score': 'Только платное',
+          'free_places': 'Нет данных',
+          'average_score': '161',
+          'olympic': 'no data',
+          'price': -80000
+        }
+      ]
+    }
+  ]
+}
