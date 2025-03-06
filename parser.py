@@ -29,15 +29,13 @@ def parse():
         data = parse_page(html_content)
 
         link_obsh = link_proxodnoi.replace('proxodnoi', 'obsh')
-        print(link_obsh)
         html_content = get_html_content(link_obsh)
         res_obsh = parse_obsh(html_content)
         data['obsh'] = res_obsh
 
         write_data(data)
         print(index)
-        break
-        # time.sleep(10)  # FIX: почему 10
+        time.sleep(10)
 
 
 if __name__ == '__main__':
