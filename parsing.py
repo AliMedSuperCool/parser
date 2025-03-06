@@ -19,7 +19,7 @@ def parse_page(html_content) -> dict:
             "long_name": "Московский государственный университет имени М.В. Ломоносова",
             "short_name": "МГУ",
             "geolocation": "Москва",
-            "is_goverment": True,
+            "is_goverment": "Гос.вуз",
             "rating": "A",
             "logo": "http://example.com/logo.png",
             "website": "http://example.com"
@@ -32,12 +32,17 @@ def parse_page(html_content) -> dict:
                 "vuz": "МГУ",
                 "faculty": "Факультет Математики",
                 "exams": [['РЯ'], ['M'], ['О']],
-                "scores": [['139', 'заоч.']],
-                "education_form": "очное",
-                "free_places": 10,
-                "average_score": 92.5,
-                "olympic": "No data",
-                "price": 200000
+                "forms": [
+                    {
+                        "scores": [['139', 'заоч.']],
+                        "education_form": "заочное",
+                        "free_places": 10,
+                        "average_score": 92.5,
+                        "olympic": "No data",
+                        "price": 200000
+                    }
+                ]
+
             }
         ]
     }
@@ -59,7 +64,7 @@ def parse():
         data = parse_page(html_content)
         write_data(data)
         print(index)
-        time.sleep(10)
+        time.sleep(10)  # FIX: почему 10
 
 
 parse()
