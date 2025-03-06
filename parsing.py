@@ -18,9 +18,12 @@ headers = {
 
 def get_html_content(url: str) -> str:
     req = requests.get(url, headers)
+    print(req)
     src = req.text
-    # soup = BeautifulSoup(src, 'html.parser')
-    return src
+    print(src)
+    soup = BeautifulSoup(src, 'html.parser')
+    print(soup)
+    # return src
 
 
 def parse():

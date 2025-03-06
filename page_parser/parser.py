@@ -16,6 +16,7 @@ def parse_page(html_content):
     #======================================
 
     programs = parse_programs_info(soup, all_page)
+    print("parsed programs_info")
 
     RESULT = {
         'vuz': vuz_info,

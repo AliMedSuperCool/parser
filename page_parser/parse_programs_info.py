@@ -67,6 +67,7 @@ def parse_programs_info(soup, all_page):
 
 
     modpaddcard_elements = cards.find_all("div", class_="mobpaddcard")
+    print(f'{modpaddcard_elements=}')
 
     specialnosti = []
 
