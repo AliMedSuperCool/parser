@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from page_parser import parse_page
+from page_parser import parse_page, parse_obsh
 from write_data_to_csv import write_data
 
 st_accept = "text/html"
@@ -15,28 +15,30 @@ headers = {
 }
 
 
-
 def get_html_content(url: str) -> str:
     req = requests.get(url, headers)
-    # print(req)
     src = req.text
-    # print(src)
-    # soup = BeautifulSoup(src, 'html.parser')
-    # print(soup)
     return src
 
 
 def parse():
     data_links = pd.read_csv('data/vizu_lins.csv')
     for index, data_link in data_links.iterrows():
-        html_content = get_html_content(data_link[0])
+        link_proxodnoi = data_link[0]
+        html_content = get_html_content(link_proxodnoi)
         data = parse_page(html_content)
-        print(html_content)
-        print(data)
-        # write_data(data)
-        # print(index)
+
+        link_obsh = link_proxodnoi.replace('proxodnoi', 'obsh')
+        print(link_obsh)
+        html_content = get_html_content(link_obsh)
+        res_obsh = parse_obsh(html_content)
+        data['obsh'] = res_obsh
+
+        write_data(data)
+        print(index)
         break
         # time.sleep(10)  # FIX: почему 10
 
 
-parse()
+if __name__ == '__main__':
+    parse()
