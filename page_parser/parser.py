@@ -4,7 +4,6 @@ from page_parser.parse_programs_info import parse_programs_info
 
 def parse_page(html_content):
     soup = BeautifulSoup(html_content, "html.parser")
-    all_page = BeautifulSoup(html_content, "html.parser")
 
     main_content_div = soup.find("div", class_="maincontent")
 
@@ -15,7 +14,7 @@ def parse_page(html_content):
 
     #======================================
 
-    programs = parse_programs_info(soup, all_page)
+    programs = parse_programs_info(soup)
     print("parsed programs_info")
 
     RESULT = {

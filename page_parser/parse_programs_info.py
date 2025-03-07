@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 from page_parser.utils import extract_element, extract_inner_text, extract_some_inner_text
 
-def parse_programs_info(soup, all_page):
+def parse_programs_info(soup):
     cards = ""
 
     if (True):
@@ -67,7 +67,6 @@ def parse_programs_info(soup, all_page):
 
 
     modpaddcard_elements = cards.find_all("div", class_="mobpaddcard")
-    print(f'{modpaddcard_elements=}')
 
     specialnosti = []
 
