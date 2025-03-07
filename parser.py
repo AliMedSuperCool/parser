@@ -1,8 +1,7 @@
 import time
-
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
+import logging
 
 from page_parser import parse_page, parse_obsh
 from write_data_to_csv import write_data
@@ -14,6 +13,12 @@ headers = {
     "User-Agent": st_useragent
 }
 
+# Настраиваем логирование: ошибки будут записываться в файл error.log
+logging.basicConfig(
+    filename='error.log',
+    level=logging.ERROR,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 def get_html_content(url: str) -> str:
     req = requests.get(url, headers)
@@ -21,20 +26,31 @@ def get_html_content(url: str) -> str:
     return src
 
 
+
+
+
 def parse():
-    data_links = pd.read_csv('data/vizu_lins.csv')
+    data_links = pd.read_csv('data/vizu_lins_part_Ali_ubuntu.csv')
     for index, data_link in data_links.iterrows():
-        link_proxodnoi = data_link[0]
-        html_content = get_html_content(link_proxodnoi)
-        data = parse_page(html_content)
+        try:
+            # Обработка данных для proxodnoi
+            link_proxodnoi = data_link[0]
+            html_content = get_html_content(link_proxodnoi)
+            data = parse_page(html_content)
 
-        link_obsh = link_proxodnoi.replace('proxodnoi', 'obsh')
-        html_content = get_html_content(link_obsh)
-        res_obsh = parse_obsh(html_content)
-        data['obsh'] = res_obsh
+            # Обработка данных для obsh
+            link_obsh = link_proxodnoi.replace('proxodnoi', 'obsh')
+            html_content = get_html_content(link_obsh)
+            res_obsh = parse_obsh(html_content)
+            data['obsh'] = res_obsh
 
-        write_data(data)
-        print(index)
+            write_data(data)
+            print(f"Итерация {index} успешно обработана")
+        except Exception as e:
+            print(f"Ошибка на итерации {index} {data_link[0]}")
+
+            logging.exception(f"Ошибка на итерации {index} {data_link[0]}: {e}")
+        # Ждем 10 секунд перед следующей итерацией
         time.sleep(10)
 
 
