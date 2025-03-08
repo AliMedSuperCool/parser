@@ -17,15 +17,30 @@ def parse_vuz_info(soup):
 
     header_content = extract_element(soup, "div", "headercontent bg2")
 
-    geolocation = extract_inner_text(
+    try:
+        geolocation = extract_inner_text(
         extract_element(header_content, 'table', 'citylink1'),
         'b')
-    goverment = extract_inner_text(
+    except Exception as e:
+        print("не удалось спарсить данные о геолокации вуза")
+        geolocation = "no data"
+
+    try: 
+        goverment = extract_inner_text(
         extract_element(header_content, 'table', 'tag2'),
         'b')
-    rating = extract_inner_text(
+    except Exception as e:
+        print("не удалось спарсить данные о государственности вуза")
+        goverment = "no data"
+    
+    
+    try: 
+        rating = extract_inner_text(
         extract_element(header_content, 'td', 'ocenka'),
         'b')
+    except Exception as e:
+        print("не удалось спарсить оценку вуза")
+        rating = "no data"
 
 
     vuz_info['short_name'] = short_name
