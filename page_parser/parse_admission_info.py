@@ -50,7 +50,10 @@ def get_contacts_from_url(url):
     try:
         response = requests.get(url)
         if response.status_code != 200:
-            return "Сайт недоступен"
+            return {"phone_admission": "Сайт не доступен",
+                    "phone_general": response,
+                    "email_general": [],
+                    "email_admission": []}
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -63,7 +66,8 @@ def get_contacts_from_url(url):
         email_pattern = r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
 
         # Ключевые слова для классификации контактов
-        keywords_admission = ["приемная комиссия", "приёмная комиссия", "абитуриентам", "поступление"]
+        keywords_admission = ["приемная комиссия", "приёмная комиссия", "абитуриентам", "поступление",
+                              "приёмная кампания", "приемная кампания"]
         keywords_general = ["контакты", "телефон", "email", "администрация", "главный корпус", "реквизиты университета",
                             "телефонный справочник"]
 
@@ -124,6 +128,6 @@ def get_contacts_from_url(url):
 
 # Пример вызова функции
 if __name__ == "__main__":
-    url = "https://mrsu.ru/ru/"
+    url = "https://tabiturient.ru/vuzu/ishim_utmn/proxodnoi"
     contacts = get_contacts_from_url(url)
     print(contacts)
