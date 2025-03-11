@@ -36,7 +36,7 @@ def get_html_content(url: str) -> str:
 
 
 def parse():
-    data_links = pd.read_csv('data/vizu_lins_part_Ali_ubuntu.csv')
+    data_links = pd.read_csv('data/vizu_lins_part_Artem.csv')
     for index, data_link in data_links.iterrows():
         try:
             # Обработка данных для proxodnoi
@@ -61,7 +61,7 @@ def parse():
 
             logging.exception(f"Ошибка на итерации {index} {data_link[0]}: {e}")
         # Ждем 10 секунд перед следующей итерацией
-        time.sleep(10)
+        time.sleep(5)
 
 
 
