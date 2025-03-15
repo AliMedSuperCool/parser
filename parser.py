@@ -36,7 +36,7 @@ def get_html_content(url: str) -> str:
 
 
 def parse():
-    data_links = pd.read_csv('data/vizu_lins_part_Ali_ubuntu.csv')
+    data_links = pd.read_csv('data/vizu_lins.csv')
     for index, data_link in data_links.iterrows():
         try:
             # Обработка данных для proxodnoi
@@ -45,14 +45,14 @@ def parse():
             data = parse_page(html_content)
 
             # Обработка данных для obsh
-            link_obsh = link_proxodnoi.replace('proxodnoi', 'obsh')
-            html_content = get_html_content(link_obsh)
-            res_obsh = parse_obsh(html_content)
-            data['obsh'] = res_obsh
-            if data['vuz']['website'] is not None:
-                contact_info = get_contacts_from_url(data['vuz']['website'])
-                if contact_info is not None:
-                    data['vuz'] = {**data['vuz'], **contact_info}
+            # link_obsh = link_proxodnoi.replace('proxodnoi', 'obsh')
+            # html_content = get_html_content(link_obsh)
+            # res_obsh = parse_obsh(html_content)
+            # data['obsh'] = res_obsh
+            # if data['vuz']['website'] is not None:
+            #     contact_info = get_contacts_from_url(data['vuz']['website'])
+            #     if contact_info is not None:
+            #         data['vuz'] = {**data['vuz'], **contact_info}
 
             write_data(data)
             print(f"Итерация {index} {data_link[0]} успешно обработана")
@@ -61,7 +61,7 @@ def parse():
 
             logging.exception(f"Ошибка на итерации {index} {data_link[0]}: {e}")
         # Ждем 10 секунд перед следующей итерацией
-        time.sleep(10)
+        time.sleep(7)
 
 
 

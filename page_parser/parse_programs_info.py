@@ -120,8 +120,8 @@ def parse_programs_info(soup):
 
     for card in tqdm(modpaddcard_elements):
         texts = card.find_all('span', 'font2')
+        vuz = card.find_all('span', 'font11')
         texts = list(map(lambda el: el.get_text(strip=True), texts))
-
         exams = card.find_all('table', 'circ5')
         exams = list(map(lambda ex: parse_ege(ex), exams))
         specialnost = {
@@ -129,7 +129,7 @@ def parse_programs_info(soup):
             'education_form': texts[1].split('|')[0].strip(),
             'program_code': texts[1].split('|')[1].strip(),
             'profile': texts[2].split("Профиль:")[-1],
-            'vuz': texts[4].split('|')[0].strip(),
+            'vuz': vuz[0].get_text(strip=True),
             'faculty': texts[5].split('Подразделение:')[-1],
             'exams': list(filter(lambda el: is_exam_name(el), exams)),
             'scores': list(filter(lambda el: is_score(el), exams)),

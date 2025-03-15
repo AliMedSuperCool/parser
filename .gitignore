@@ -25,6 +25,10 @@ pip-selfcheck.json
 *.db-shm
 *.db-wal
 
+
+### file template
+*.zip
+
 ### Redis template
 # Ignore redis binary dump (dump.rdb) files
 

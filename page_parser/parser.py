@@ -9,8 +9,9 @@ def parse_page(html_content):
 
     inner_html = main_content_div.decode_contents()
     soup = BeautifulSoup(inner_html, "html.parser")
-    vuz_info = parse_vuz_info(soup)
-    print("parsed vuz_info")
+
+    # vuz_info = parse_vuz_info(soup)
+    # print("parsed vuz_info")
 
     #======================================
 
@@ -18,7 +19,7 @@ def parse_page(html_content):
     print("parsed programs_info")
 
     RESULT = {
-        'vuz': vuz_info,
+        # 'vuz': vuz_info,
         'programs': programs
     }
 
