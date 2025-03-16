@@ -36,7 +36,7 @@ def get_html_content(url: str) -> str:
 
 
 def parse():
-    data_links = pd.read_csv('data/vizu_lins.csv')
+    data_links = pd.read_csv('data/vizu_lins_error.csv')
     for index, data_link in data_links.iterrows():
         try:
             # Обработка данных для proxodnoi
@@ -53,7 +53,7 @@ def parse():
             #     contact_info = get_contacts_from_url(data['vuz']['website'])
             #     if contact_info is not None:
             #         data['vuz'] = {**data['vuz'], **contact_info}
-
+            print(data)
             write_data(data)
             print(f"Итерация {index} {data_link[0]} успешно обработана")
         except Exception as e:
