@@ -12,7 +12,7 @@ def write_data(data):
     Если опциональное поле отсутствует, ставится значение "no data".
     """
 
-    path = "data/tabiturient/"
+    path = "../data/tabiturient/"
     # # Обработка данных вуза
     # vuz_data = data.get("vuz", {})
     # vuz_fields = [
@@ -97,7 +97,7 @@ def write_data(data):
 
 # Пример использования функции с новым форматом профиля
 if __name__ == "__main__":
-    with open('data/example.json') as f:
+    with open('../data/example.json') as f:
         data = json.load(f)
     print(data)
     write_data(data)

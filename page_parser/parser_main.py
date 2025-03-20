@@ -3,8 +3,8 @@ import pandas as pd
 import requests
 import logging
 
-from page_parser import parse_page, parse_obsh, get_contacts_from_url
-from write_data_to_csv import write_data
+from page_parser import parse_page
+from page_parser.write_data_to_csv import write_data
 
 
 headers = {
@@ -36,7 +36,7 @@ def get_html_content(url: str) -> str:
 
 
 def parse():
-    data_links = pd.read_csv('data/vizu_lins_error.csv')
+    data_links = pd.read_csv('../data/vizu_lins_error.csv')
     for index, data_link in data_links.iterrows():
         try:
             # Обработка данных для proxodnoi
