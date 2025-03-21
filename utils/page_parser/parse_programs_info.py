@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 from tqdm import tqdm
 
-from page_parser.utils import extract_element, extract_inner_text, extract_some_inner_text
+from utils.page_parser.utils import extract_element, extract_inner_text, extract_some_inner_text
 
 def parse_programs_info(soup):
     cards = ""

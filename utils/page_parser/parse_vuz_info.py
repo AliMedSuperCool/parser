@@ -1,4 +1,4 @@
-from page_parser.utils import extract_some_inner_text, extract_inner_text, extract_element
+from utils.page_parser.utils import extract_inner_text, extract_element
 
 
 def parse_vuz_info(soup):

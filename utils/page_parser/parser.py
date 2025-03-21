@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
-from page_parser.parse_vuz_info import parse_vuz_info
-from page_parser.parse_programs_info import parse_programs_info
+from utils.page_parser.parse_programs_info import parse_programs_info
 
 def parse_page(html_content):
     soup = BeautifulSoup(html_content, "html.parser")
