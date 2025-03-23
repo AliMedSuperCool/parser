@@ -110,6 +110,8 @@ websocket-client = "1.8.0"
 widgetsnbextension = "4.0.13"
 fastapi = "^0.115.11"
 alembic = "^1.15.1"
+sqlalchemy = "^2.0.39"
+pydantic = "^2.10.6"
 
 [build-system]
 requires = ["poetry-core>=1.5.0"]
