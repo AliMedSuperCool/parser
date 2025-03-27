@@ -1,4 +1,5 @@
-from models.user import UserProfile
-from models.tasks import Tasks, Categories
+# from models.user import UserProfile
+from models.university import University
+from models.dormitory import Dormitory
 
-__all__ = ['Tasks', 'Categories', 'UserProfile']
+__all__ = ['Dormitory', 'University']
