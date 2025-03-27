@@ -19,6 +19,7 @@ class Dormitory(Base):
     dormitory: Mapped[bool] = mapped_column(nullable=False)
     info: Mapped[str] = mapped_column(Text, nullable=True)
     rating: Mapped[float] = mapped_column(nullable=True)
+    universities = relationship("University", back_populates="dormitory")
 
     # university: Mapped["University"] = relationship(
     #     "University",
