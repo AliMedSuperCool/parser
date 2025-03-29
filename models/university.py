@@ -24,8 +24,8 @@ class University(Base):
     phone_general: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
     email_general: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
     email_admission: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
-    dormitory = relationship("Dormitory", back_populates="universities", uselist=False)
-
+    # dormitory = relationship("Dormitory", back_populates="university", uselist=False)
+    dormitory: Mapped["Dormitory"] = relationship("Dormitory", uselist=False, back_populates="university")
     # dormitory: Mapped[Optional["Dormitory"]] = relationship(
     #     "Dormitory",
     #     uselist=False,
