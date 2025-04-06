@@ -89,6 +89,9 @@ class ProgramFilterParams(BaseModel):
     faculty: Optional[str] = Field(None, description="Факультет")
     education_form2: Optional[str] = Field(None, description="Форма обучения (из JSONB поля)")
 
+    limit: int = Field(50, ge=1, le=500, description="Сколько программ вернуть")
+    offset: int = Field(0, ge=0, description="Пропустить программ")
+
 
 class ProgramOut(BaseModel):
     id: int
@@ -174,6 +177,8 @@ async def get_programs(
 
         if conditions:
             stmt = stmt.where(and_(*conditions))
+
+        stmt = stmt.offset(filters.offset).limit(filters.limit)
 
         result = session.execute(stmt)
         programs = result.scalars().all()
