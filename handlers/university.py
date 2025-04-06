@@ -5,7 +5,7 @@ from typing import List, Annotated, Optional, Any, Dict, Union
 
 from fastapi import APIRouter, status, Depends
 from pydantic import BaseModel, Field, validator
-from sqlalchemy import select, and_, Integer, func, or_
+from sqlalchemy import select, and_, Integer, func, or_, exists
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from database import get_db_session
@@ -302,6 +302,10 @@ def compute_program_score(program: Program, filters: ProgramFilterParams) -> flo
     )
     return res
 
+from sqlalchemy import exists, select
+
+from sqlalchemy import exists, select
+
 @router.get("/grouped-programs", response_model=List[UniversityWithProgramsOut])
 async def get_grouped_programs(
     filters: ProgramFilterParams = Depends(),
@@ -318,6 +322,7 @@ async def get_grouped_programs(
             filters.region = "Москва"
             filters.is_free = True
 
+        # Базовый запрос с присоединением университета и общежития
         stmt = select(Program).options(
             joinedload(Program.university).joinedload(University.dormitory)
         )
@@ -327,44 +332,95 @@ async def get_grouped_programs(
         if filters.direction:
             conditions.append(Program.direction.ilike(f"%{filters.direction}%"))
 
+        # Подзапрос для разворачивания JSONB массива forms
+        forms_subquery = (
+            select(
+                Program.id.label("program_id"),
+                func.jsonb_extract_path_text(func.jsonb_array_elements(Program.forms), "education_form2").label("education_form2"),
+                func.jsonb_extract_path_text(func.jsonb_array_elements(Program.forms), "score").label("score"),
+                func.jsonb_extract_path_text(func.jsonb_array_elements(Program.forms), "price").label("price")
+            )
+            .subquery("forms_expanded")
+        )
+
+        # Условия для JSONB поля forms
         if filters.education_form:
             conditions.append(
-                Program.forms[0]["education_form2"].astext.ilike(f"%{filters.education_form}%")
+                exists(
+                    select(1)
+                    .select_from(forms_subquery)
+                    .where(
+                        and_(
+                            forms_subquery.c.program_id == Program.id,
+                            forms_subquery.c.education_form2.ilike(f"%{filters.education_form}%")
+                        )
+                    )
+                )
             )
 
         if filters.is_free is True:
             conditions.append(
-                Program.forms[0]["score"].astext != "Только платное"
+                exists(
+                    select(1)
+                    .select_from(forms_subquery)
+                    .where(
+                        and_(
+                            forms_subquery.c.program_id == Program.id,
+                            forms_subquery.c.score != "Только платное"
+                        )
+                    )
+                )
             )
         elif filters.is_free is False:
             conditions.append(
-                or_(
-                    Program.forms[0]["score"].astext == "Только платное",
-                    func.coalesce(
-                        func.nullif(Program.forms[0]["price"].astext, "no data").cast(Integer),
-                        0
-                    ) > 0
+                exists(
+                    select(1)
+                    .select_from(forms_subquery)
+                    .where(
+                        and_(
+                            forms_subquery.c.program_id == Program.id,
+                            or_(
+                                forms_subquery.c.score == "Только платное",
+                                func.coalesce(
+                                    func.nullif(forms_subquery.c.price, "no data").cast(Integer),
+                                    0
+                                ) > 0
+                            )
+                        )
+                    )
                 )
             )
 
-        # Условие: score <= user_score + 10
         if filters.user_score is not None:
             conditions.append(
-                and_(
-                    Program.forms[0]["score"].astext.op('~')('^[0-9]+$'),  # Проверяем, что это число
-                    func.nullif(Program.forms[0]["score"].astext, "Только платное").cast(Integer) <= (
-                                filters.user_score + 10)
+                exists(
+                    select(1)
+                    .select_from(forms_subquery)
+                    .where(
+                        and_(
+                            forms_subquery.c.program_id == Program.id,
+                            forms_subquery.c.score.op('~')('^[0-9]+$'),
+                            func.nullif(forms_subquery.c.score, "Только платное").cast(Integer) <= (filters.user_score + 10)
+                        )
+                    )
                 )
             )
 
         if filters.max_price is not None:
             conditions.append(
-                and_(
-                    Program.forms[0]["price"].astext != "no data",
-                    func.coalesce(
-                        func.nullif(Program.forms[0]["price"].astext, "no data").cast(Integer),
-                        0
-                    ) <= abs(filters.max_price)
+                exists(
+                    select(1)
+                    .select_from(forms_subquery)
+                    .where(
+                        and_(
+                            forms_subquery.c.program_id == Program.id,
+                            forms_subquery.c.price != "no data",
+                            func.coalesce(
+                                func.nullif(forms_subquery.c.price, "no data").cast(Integer),
+                                0
+                            ) <= abs(filters.max_price)
+                        )
+                    )
                 )
             )
 
@@ -403,7 +459,15 @@ async def get_grouped_programs(
                     "dormitory": uni.dormitory,
                     "programs": []
                 }
+            # Фильтруем forms, чтобы включать только те, что соответствуют education_form
+            filtered_forms = prog.forms
+            if filters.education_form:
+                filtered_forms = [
+                    form for form in prog.forms
+                    if form.get("education_form2", "").lower().find(filters.education_form.lower()) != -1
+                ]
             prog_dict = ProgramShortOut.model_validate(prog).model_dump()
+            prog_dict["forms"] = filtered_forms  # Заменяем forms на отфильтрованные
             prog_dict["ranking"] = score
             grouped[uni.long_name]["programs"].append(prog_dict)
 
@@ -423,4 +487,3 @@ async def get_grouped_programs(
             )
             for v in paginated_grouped_list
         ]
-
