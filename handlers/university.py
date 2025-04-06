@@ -176,8 +176,8 @@ class ProgramFilterParams(BaseModel):
     max_price: Optional[int] = Field(None, description="Максимальная цена (отрицательная)")
     is_goverment: Optional[bool] = Field(None, description="Гос или не гос")
     region: Optional[str] = Field(None, description="Регион (по university.geolocation)")
-    limit: int = Field(50, ge=1, le=500, description="Сколько программ вернуть")
-    offset: int = Field(0, ge=0, description="Пропустить программ")
+    page_size: int = Field(50, ge=1, le=500, description="Сколько программ вернуть")
+    page: int = Field(0, ge=0, description="Пропустить программ")
 
     class Config:
         from_attributes = True
@@ -334,12 +334,15 @@ async def get_grouped_programs(
             conditions.append(
                 or_(
                     Program.forms[0]["score"].astext == "Только платное",
-                    Program.forms[0]["price"].astext.cast(Integer) < 0
+                    func.coalesce(
+                        func.nullif(Program.forms[0]["price"].astext, "no data").cast(Integer),
+                        0
+                    ) > 0  # Платные программы: price > 0
                 )
             )
 
         # Минимальный балл
-        if filters.min_score:  # что это
+        if filters.min_score:
             conditions.append(
                 func.nullif(Program.forms[0]["score"].astext, "Только платное").cast(Integer) >= filters.min_score
             )
@@ -349,7 +352,7 @@ async def get_grouped_programs(
             conditions.append(
                 func.coalesce(
                     func.nullif(Program.forms[0]["price"].astext, "no data").cast(Integer),
-                    0  # Значение по умолчанию для нечисловых значений
+                    0
                 ) >= -abs(filters.max_price)
             )
 
@@ -366,7 +369,7 @@ async def get_grouped_programs(
         if conditions:
             stmt = stmt.where(and_(*conditions))
 
-        # Выполнение запроса
+        # Выполнение запроса (без пагинации на уровне программ)
         result = session.execute(stmt)
         programs = result.scalars().all()
 
@@ -402,6 +405,10 @@ async def get_grouped_programs(
         grouped_list = list(grouped.values())
         grouped_list.sort(key=lambda x: max(p["ranking"] for p in x["programs"]) if x["programs"] else 0, reverse=True)
 
+        # Пагинация университетов
+        offset = filters.page * filters.page_size
+        paginated_grouped_list = grouped_list[offset:offset + filters.page_size]
+
         # Формирование ответа
         return [
             UniversityWithProgramsOut(
@@ -411,9 +418,8 @@ async def get_grouped_programs(
                     "programs": [ProgramShortOut(**p) for p in v["programs"]]
                 }
             )
-            for v in grouped_list
+            for v in paginated_grouped_list
         ]
-
 
 
 
