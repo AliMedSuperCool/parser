@@ -1,12 +1,15 @@
 # Пример использования сессии
 import pandas as pd
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from database import get_db_session
 from models import University, Dormitory, Program
 
 Session = get_db_session()
 with Session() as session:
-    vuzs = pd.read_csv('../data/tabiturient/all/vuz_with_army.csv')
+    vuzs = pd.read_csv('data/tabiturient/all/vuz_with_army.csv')
 
     for num, vuz in vuzs.iterrows():
         print(f"{vuz.long_name}")
@@ -27,7 +30,7 @@ with Session() as session:
     session.commit()
     # print(f"{vuz.long_name} успешно добавлен в БД!")
 
-    obshs = pd.read_csv('../data/tabiturient/all/osbh_all.csv')
+    obshs = pd.read_csv('data/tabiturient/all/osbh_all.csv')
     for num, obsh in obshs.iterrows():
         print(obsh)
         dorm = Dormitory(
@@ -40,7 +43,7 @@ with Session() as session:
     session.commit()
     # session.close()
 
-    programs = pd.read_csv('../data/tabiturient/processed_data/programs_cleaned.csv')
+    programs = pd.read_csv('data/tabiturient/processed_data/programs_cleaned.csv')
     for num, program in programs.iterrows():
         new_program = Program(
             direction=program.direction,

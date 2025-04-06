@@ -281,7 +281,7 @@ async def get_grouped_programs(
                 func.nullif(Program.forms[0]["score"].astext).cast(Integer) >= filters.min_score
             )
 
-        # Цена (у тебя отрицательная логика цены, т.е. -121500)
+        # Цена (у вас там отрицательные значения цены, т.е. -121500)
         if filters.max_price is not None:
             conditions.append(
                 Program.forms[0]["price"].astext.cast(Integer) >= -abs(filters.max_price)
@@ -302,10 +302,145 @@ async def get_grouped_programs(
         result = session.execute(stmt)
         programs = result.scalars().all()
 
-        # Группировка программ по вузам
+        # ----------------------------
+        # 1. Считаем рейтинг программы
+        # ----------------------------
+
+        # Предположим, у нас есть некие данные от пользователя:
+        user_total_score = filters.  # Например, сумма баллов ЕГЭ
+        user_ege_count = filters.ege_count or 3  # Сколько предметов ЕГЭ
+        user_price_min = filters.user_price_min or 0  # Мин. цена, которую пользователь готов платить
+        user_price_max = filters.user_price_max or 999999  # Макс. цена
+
+        # Веса
+        W_ex = 0.4
+        W_rat = 0.3
+        W_dorm = 0.1
+        W_gov = 0.1
+        W_price = 0.05
+        W_fill = 0.05
+
+        # Для удобства выносим логику в небольшую функцию
+        def compute_program_score(program: Program) -> float:
+            """
+            Возвращает итоговый рейтинг (res) для одной программы.
+            Все формулы из условия, часть логики упрощена/примерная,
+            адаптируйте под реальную структуру ваших данных.
+            """
+
+            # ===== P_ex (экзамен) =====
+            # Предположим, в program.forms[0]["score"] хранится минимальный проходной балл,
+            # если он не "Только платное". Если None или не парсится, ставим 0.
+            try:
+                pass_score = int(program.forms[0]["score"])
+            except:
+                # нет или "Только платное" — можем считать проходной = 0, или любой другой дефолт
+                pass_score = 0
+
+            # Если у пользователя нет среднего балла, P_ex = 0.
+            # Иначе по формуле:
+            # P_ex = max(0, (user_total_score - pass_score) / (user_ege_count * 100 - pass_score))
+            if user_total_score and pass_score and user_ege_count:
+                denominator = user_ege_count * 100 - pass_score
+                if denominator <= 0:
+                    P_ex = 0
+                else:
+                    P_ex = max(0, (user_total_score - pass_score) / denominator)
+            else:
+                P_ex = 0
+
+            # ===== P_rat (рейтинг вуза) =====
+            # Пусть рейтинг лежит в поле university.rating
+            # Предположим, что рейтинг в диапазоне [0..100], тогда масштабируем до [0..1]
+            uni_rating = program.university.rating or 0
+            P_rat = min(max(uni_rating / 100, 0), 1)
+
+            # ===== P_dorm (общежитие) =====
+            # 1, если есть, 0, если нет
+            P_dorm = 1 if program.university.dormitory else 0
+
+            # ===== P_gov (гос. вуз) =====
+            # 1, если гос, 0, если не гос
+            P_gov = 1 if program.university.is_goverment else 0
+
+            # ===== P_price (цена) =====
+            # Если бюджетное место (или бесплатно), P_price = 1
+            # Иначе применяем логику
+            #   p – цена, user_price_min, user_price_max – интервал
+            #   если p в [min, max] => 1
+            #   если p < min => max(0, 1 - (min - p)/min)
+            #   если p > max => max(0, 1 - (p - max)/max)
+            try:
+                price = abs(int(program.forms[0]["price"]))
+            except:
+                price = 0
+
+            # Если "score" == "Только платное", значит не бюджет
+            # Но если price == 0, предположим, что это значит "бюджетное".
+            if price == 0:
+                P_price = 1
+            else:
+                if user_price_min <= price <= user_price_max:
+                    P_price = 1
+                elif price < user_price_min:
+                    if user_price_min == 0:
+                        P_price = 0  # во избежание деления на 0
+                    else:
+                        diff = user_price_min - price
+                        P_price = max(0, 1 - diff / user_price_min)
+                else:  # price > user_price_max
+                    diff = price - user_price_max
+                    if user_price_max == 0:
+                        P_price = 0
+                    else:
+                        P_price = max(0, 1 - diff / user_price_max)
+
+            # ===== P_fill (заполненность) =====
+            # Условно считаем, сколько есть непустых полей в программе, делим на общее число полей
+            # Допустим, total_fields = 5, fields = [direction, forms, description, ...]
+            # Реальный набор полей надо определить самим
+            total_fields = 5
+            filled = 0
+            if program.direction:
+                filled += 1
+            if program.forms:
+                filled += 1
+            if program.university.geolocation:
+                filled += 1
+            if program.university.rating is not None:
+                filled += 1
+            # и т.д. — добавляйте нужные поля
+            P_fill = filled / total_fields
+
+            # Итоговый рейтинг
+            res = (
+                W_ex * P_ex
+                + W_rat * P_rat
+                + W_dorm * P_dorm
+                + W_gov * P_gov
+                + W_price * P_price
+                + W_fill * P_fill
+            )
+            return res
+
+        # Создаем структуру, где для каждого Program считаем рейтинг:
+        program_with_score = []
+        for prog in programs:
+            score = compute_program_score(prog)
+            program_with_score.append((prog, score))
+
+        # ----------------------------
+        # 2. Сортируем программы
+        # ----------------------------
+        # По убыванию рейтинга:
+        program_with_score.sort(key=lambda x: x[1], reverse=True)
+
+        # ----------------------------
+        # 3. Группируем по вузам
+        # ----------------------------
         grouped: Dict[str, Dict] = {}
 
-        for prog in programs:
+        for prog, score in program_with_score:
             uni = prog.university
             if uni.long_name not in grouped:
                 grouped[uni.long_name] = {
@@ -319,18 +454,40 @@ async def get_grouped_programs(
                     "programs": []
                 }
 
-            grouped[uni.long_name]["programs"].append(prog)
+            # Обратите внимание: чтобы в ответе тоже был рейтинг, нужно либо
+            # расширить схему ProgramShortOut полем "score", либо вернуть это
+            # дополнительным полем. Для примера будем класть в словарь:
+            prog_dict = ProgramShortOut.model_validate(prog).model_dump()
+            prog_dict["ranking"] = score
 
-        # return [UniversityWithProgramsOut(**v) for v in grouped.values()]
+            grouped[uni.long_name]["programs"].append(prog_dict)
+
+        # Если хотите также отсортировать вузы по максимальному (или среднему) рейтингу программ:
+        # например, берем максимум
+        def get_uni_best_score(uni_data):
+            programs_ = uni_data["programs"]
+            if not programs_:
+                return 0
+            return max(p["ranking"] for p in programs_)
+
+        # Преобразуем в список, сортируем
+        grouped_list = list(grouped.values())
+        grouped_list.sort(key=get_uni_best_score, reverse=True)
+
+        # ----------------------------
+        # 4. Финальный возврат
+        # ----------------------------
         return [
             UniversityWithProgramsOut(
                 **{
                     **v,
                     "dormitory": DormitoryOut.model_validate(v["dormitory"]) if v["dormitory"] else None,
-                    "programs": [ProgramShortOut.model_validate(p) for p in v["programs"]]
+                    # Превращаем список словарей обратно в список ProgramShortOut,
+                    # если у вас у ProgramShortOut есть поле ranking, нужно дополнить модель:
+                    "programs": [ProgramShortOut(**p) for p in v["programs"]]
                 }
             )
-            for v in grouped.values()
+            for v in grouped_list
         ]
 
 
