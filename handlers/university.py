@@ -24,8 +24,7 @@ class ProgramFilterParams(BaseModel):
     faculty: Optional[str] = Field(None, description="Факультет")
     education_form2: Optional[str] = Field(None, description="Форма обучения (из JSONB поля)")
 
-    limit: int = Field(50, ge=1, le=500, description="Сколько программ вернуть")
-    offset: int = Field(0, ge=0, description="Пропустить программ")
+
 
 
 class ProgramOut(BaseModel):
@@ -177,6 +176,8 @@ class ProgramFilterParams(BaseModel):
     max_price: Optional[int] = Field(None, description="Максимальная цена (отрицательная)")
     is_goverment: Optional[bool] = Field(None, description="Гос или не гос")
     region: Optional[str] = Field(None, description="Регион (по university.geolocation)")
+    limit: int = Field(50, ge=1, le=500, description="Сколько программ вернуть")
+    offset: int = Field(0, ge=0, description="Пропустить программ")
 
     class Config:
         from_attributes = True
@@ -346,7 +347,10 @@ async def get_grouped_programs(
         # Максимальная цена
         if filters.max_price is not None:
             conditions.append(
-                Program.forms[0]["price"].astext.cast(Integer) >= -abs(filters.max_price)
+                func.coalesce(
+                    func.nullif(Program.forms[0]["price"].astext, "no data").cast(Integer),
+                    0  # Значение по умолчанию для нечисловых значений
+                ) >= -abs(filters.max_price)
             )
 
         # Гос/не гос
@@ -356,6 +360,7 @@ async def get_grouped_programs(
 
         # Регион
         if filters.region:
+            stmt = stmt.join(Program.university)
             conditions.append(University.geolocation.ilike(f"%{filters.region}%"))
 
         if conditions:
