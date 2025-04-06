@@ -9,7 +9,7 @@ from sqlalchemy import select, and_, Integer, func, or_, exists
 from sqlalchemy.orm import Session, joinedload, selectinload
 
 from database import get_db_session
-from models import Program, University
+from models import Program, University, Dormitory
 from shema import UniversityShema
 
 router = APIRouter(prefix="/task", tags=["task"])
@@ -179,7 +179,8 @@ class ProgramFilterParams(BaseModel):
     max_price: Optional[int] = Field(None, description="Максимальная цена (отрицательная)")
     is_goverment: Optional[bool] = Field(None, description="Гос или не гос")
     region: Optional[str] = Field(None, description="Регион (по university.geolocation)")
-    user_exams: Optional[List[str]] = Field(None, description="Список экзаменов пользователя")  # <-- новое поле
+    user_exams: Optional[List[str]] = Field(None, description="Список экзаменов пользователя")
+    has_dormitory: Optional[bool] = Field(None, description="Наличие общежития")
     page_size: int = Field(5, ge=1, le=50, description="Сколько программ вернуть")
     page: int = Field(1, ge=1, description="Пропустить программ")
 
@@ -423,7 +424,12 @@ async def get_grouped_programs(
         if filters.is_goverment is not None:
             stmt = stmt.join(Program.university)
             conditions.append(University.is_goverment == filters.is_goverment)
-
+        #
+        if filters.has_dormitory is not None:
+            # Подтягиваем таблицу University, если еще не джойнили
+            stmt = stmt.join(Program.university).join(University.dormitory)
+            conditions.append(Dormitory.dormitory == filters.has_dormitory)
+        #
         if filters.region:
             stmt = stmt.join(Program.university)
             conditions.append(University.geolocation.ilike(f"%{filters.region}%"))
@@ -436,7 +442,7 @@ async def get_grouped_programs(
         programs = result.scalars().all()
 
         # 3) Дополнительная фильтрация по exam'ам (если пользователь передал user_exams)
-        if filters.user_exams:
+        if filters.user_exams and filters.user_exams!='':
             user_exams_set = set(e.strip().upper() for e in filters.user_exams)  # приведение к верхнему регистру, если надо
 
             def check_exams(program_exams: List[List[str]]) -> bool:
@@ -483,7 +489,9 @@ async def get_grouped_programs(
                     "is_goverment": uni.is_goverment,
                     "rating": uni.rating,
                     "dormitory": uni.dormitory,
-                    "programs": []
+                    "programs": [],
+                    "phone_admission": uni.phone_admission,
+                    "email_admission": uni.email_admission
                 }
             # можно фильтровать forms по education_form
             filtered_forms = prog.forms
