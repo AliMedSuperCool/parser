@@ -317,14 +317,20 @@ async def get_grouped_programs(
     session: Session = Depends(get_db_session),
 ):
     with session() as session:
-        # 1) Формируем stmt с базовыми условиями
-        #    (пример, как у вас было в коде выше)
+        no_filters_applied = all(
+            getattr(filters, field) is None
+            for field in filters.__fields__
+            if field not in ["page", "page_size"]
+        )
+
+        if no_filters_applied:
+            filters.region = "Москва"
+            filters.is_free = True
         stmt = select(Program).options(
             joinedload(Program.university).joinedload(University.dormitory)
         )
 
         conditions = []
-        # Пример логики, как у вас выше
         if filters.direction:
             conditions.append(Program.direction.ilike(f"%{filters.direction}%"))
 
