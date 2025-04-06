@@ -45,6 +45,13 @@ with Session() as session:
 
     programs = pd.read_csv('data/tabiturient/processed_data/programs_cleaned.csv')
     for num, program in programs.iterrows():
+        forms_data = eval(program.forms)
+        # Проходим по каждому словарю в списке forms и делаем price положительным
+        for i in range(len(forms_data)):
+            form = forms_data[i]
+            if 'price' in form and isinstance(form['price'], (int, float)):
+                forms_data[i]['price'] = abs(form['price'])  # Убираем отрицательный знак
+
         new_program = Program(
             direction=program.direction,
             profile=program.profile,
@@ -56,7 +63,7 @@ with Session() as session:
             exams=eval(program.exams),
 
             scores=eval(program.scores),
-            forms=eval(program.forms),
+            forms=forms_data,
         )
 
         # Добавляем объект в сессию и коммитим изменения

@@ -172,30 +172,29 @@ class ProgramFilterParams(BaseModel):
     direction: Optional[str] = Field(None, description="Направление")
     education_form: Optional[str] = Field(None, description="Очная/Заочная")
     is_free: Optional[bool] = Field(None, description="Только бесплатные места")
-    min_score: Optional[int] = Field(None, description="Минимальный балл")
+    user_score: Optional[int] = Field(None, description="Балл пользователя")
     max_price: Optional[int] = Field(None, description="Максимальная цена (отрицательная)")
     is_goverment: Optional[bool] = Field(None, description="Гос или не гос")
     region: Optional[str] = Field(None, description="Регион (по university.geolocation)")
-    page_size: int = Field(50, ge=1, le=500, description="Сколько программ вернуть")
-    page: int = Field(0, ge=0, description="Пропустить программ")
+    page_size: int = Field(5, ge=1, le=50, description="Сколько программ вернуть")
+    page: int = Field(1, ge=1, description="Пропустить программ")
 
     class Config:
         from_attributes = True
 
-
-
 # Веса для ранжирования
-W_ex = 0.4    # Экзамены (минимальный балл)
-W_rat = 0.3   # Рейтинг университета
-W_dorm = 0.1  # Наличие общежития
-W_gov = 0.1   # Государственный вуз
+W_ex = 0.5    # Экзамены (близость к user_score) — самый важный
+W_rat = 0.25  # Рейтинг университета — второй по важности
+W_dorm = 0.05 # Наличие общежития
+W_gov = 0.05  # Государственный вуз
 W_price = 0.05  # Цена
-W_fill = 0.05  # Заполненность
-W_free = 0.1  # Наличие бюджетных мест (добавляем новый вес, корректируем другие если нужно)
+W_fill = 0.025  # Заполненность
+W_free = 0.075  # Наличие бюджетных мест
 
 def compute_program_score(program: Program, filters: ProgramFilterParams) -> float:
     """
-    Вычисляет рейтинг программы с учетом всех параметров из ProgramFilterParams, включая free_places.
+    Вычисляет рейтинг программы с учетом всех параметров из ProgramFilterParams.
+    Больше очков дается программам, где pass_score ближе к user_score.
     """
     # ===== P_ex (экзамен) =====
     try:
@@ -203,13 +202,16 @@ def compute_program_score(program: Program, filters: ProgramFilterParams) -> flo
     except (ValueError, TypeError, KeyError):
         pass_score = 0
 
-    if filters.min_score and pass_score:
-        user_ege_count = 3  # Условно, можно сделать параметром
-        denominator = user_ege_count * 100 - pass_score
-        if denominator <= 0:
-            P_ex = 0
+    if filters.user_score and pass_score:
+        # Вычисляем абсолютную разницу между user_score и pass_score
+        score_diff = abs(filters.user_score - pass_score)
+        # Максимальная допустимая разница (например, 50 баллов), чтобы рейтинг не обнулился
+        max_diff = 50
+        if score_diff <= max_diff:
+            # Чем меньше разница, тем выше рейтинг (линейное убывание от 1 до 0)
+            P_ex = 1 - (score_diff / max_diff)
         else:
-            P_ex = max(0, (filters.min_score - pass_score) / denominator)
+            P_ex = 0  # Если разница больше max_diff, рейтинг 0
     else:
         P_ex = 0
 
@@ -255,18 +257,16 @@ def compute_program_score(program: Program, filters: ProgramFilterParams) -> flo
     except (ValueError, TypeError, KeyError):
         free_places = 0
 
-    # Если ищут бюджетное (is_free=True) или не указано (is_free=None), наличие мест повышает рейтинг
     if filters.is_free is True or filters.is_free is None:
         if free_places > 0:
-            # Масштабируем: больше мест -> выше рейтинг, но не более 1
             P_free = min(1.0, free_places / 50)  # Например, 50 мест = максимум 1
         else:
             P_free = 0
     else:  # filters.is_free is False (ищут платное)
-        P_free = 0  # Бюджетные места не влияют на рейтинг
+        P_free = 0
 
     # ===== P_fill (заполненность) =====
-    total_fields = 8  # Увеличиваем на 1 из-за free_places
+    total_fields = 8
     filled = 0
     if program.direction and (not filters.direction or filters.direction.lower() in program.direction.lower()):
         filled += 1
@@ -282,7 +282,7 @@ def compute_program_score(program: Program, filters: ProgramFilterParams) -> flo
         filled += 1
     if program.university.is_goverment is not None and (filters.is_goverment is None or program.university.is_goverment == filters.is_goverment):
         filled += 1
-    if "score" in program.forms[0] and (filters.min_score is None or pass_score >= filters.min_score):
+    if "score" in program.forms[0] and (filters.user_score is None or pass_score <= (filters.user_score + 10)):  # Учитываем условие <= user_score + 10
         filled += 1
     if "price" in program.forms[0] and (filters.max_price is None or price <= abs(filters.max_price)):
         filled += 1
@@ -298,7 +298,7 @@ def compute_program_score(program: Program, filters: ProgramFilterParams) -> flo
         + W_gov * P_gov
         + W_price * P_price
         + W_fill * P_fill
-        + W_free * P_free  # Добавляем вклад бюджетных мест
+        + W_free * P_free
     )
     return res
 
@@ -308,24 +308,30 @@ async def get_grouped_programs(
     session: Session = Depends(get_db_session),
 ):
     with session() as session:
-        # Базовый запрос с подгрузкой связанных данных
+        no_filters_applied = all(
+            getattr(filters, field) is None
+            for field in filters.__fields__
+            if field not in ["page", "page_size"]
+        )
+
+        if no_filters_applied:
+            filters.region = "Москва"
+            filters.is_free = True
+
         stmt = select(Program).options(
             joinedload(Program.university).joinedload(University.dormitory)
         )
 
         conditions = []
 
-        # Фильтрация по направлению
         if filters.direction:
             conditions.append(Program.direction.ilike(f"%{filters.direction}%"))
 
-        # Форма обучения в JSONB
         if filters.education_form:
             conditions.append(
                 Program.forms[0]["education_form2"].astext.ilike(f"%{filters.education_form}%")
             )
 
-        # Бесплатное/платное
         if filters.is_free is True:
             conditions.append(
                 Program.forms[0]["score"].astext != "Только платное"
@@ -337,31 +343,35 @@ async def get_grouped_programs(
                     func.coalesce(
                         func.nullif(Program.forms[0]["price"].astext, "no data").cast(Integer),
                         0
-                    ) > 0  # Платные программы: price > 0
+                    ) > 0
                 )
             )
 
-        # Минимальный балл
-        if filters.min_score:
+        # Условие: score <= user_score + 10
+        if filters.user_score is not None:
             conditions.append(
-                func.nullif(Program.forms[0]["score"].astext, "Только платное").cast(Integer) >= filters.min_score
+                and_(
+                    Program.forms[0]["score"].astext.op('~')('^[0-9]+$'),  # Проверяем, что это число
+                    func.nullif(Program.forms[0]["score"].astext, "Только платное").cast(Integer) <= (
+                                filters.user_score + 10)
+                )
             )
 
-        # Максимальная цена
         if filters.max_price is not None:
             conditions.append(
-                func.coalesce(
-                    func.nullif(Program.forms[0]["price"].astext, "no data").cast(Integer),
-                    0
-                ) >= -abs(filters.max_price)
+                and_(
+                    Program.forms[0]["price"].astext != "no data",
+                    func.coalesce(
+                        func.nullif(Program.forms[0]["price"].astext, "no data").cast(Integer),
+                        0
+                    ) <= abs(filters.max_price)
+                )
             )
 
-        # Гос/не гос
         if filters.is_goverment is not None:
             stmt = stmt.join(Program.university)
             conditions.append(University.is_goverment == filters.is_goverment)
 
-        # Регион
         if filters.region:
             stmt = stmt.join(Program.university)
             conditions.append(University.geolocation.ilike(f"%{filters.region}%"))
@@ -369,20 +379,16 @@ async def get_grouped_programs(
         if conditions:
             stmt = stmt.where(and_(*conditions))
 
-        # Выполнение запроса (без пагинации на уровне программ)
         result = session.execute(stmt)
         programs = result.scalars().all()
 
-        # Ранжирование программ
         program_with_score = []
         for prog in programs:
             score = compute_program_score(prog, filters)
             program_with_score.append((prog, score))
 
-        # Сортировка по убыванию рейтинга
         program_with_score.sort(key=lambda x: x[1], reverse=True)
 
-        # Группировка по университетам
         grouped: Dict[str, Dict] = {}
         for prog, score in program_with_score:
             uni = prog.university
@@ -401,15 +407,12 @@ async def get_grouped_programs(
             prog_dict["ranking"] = score
             grouped[uni.long_name]["programs"].append(prog_dict)
 
-        # Сортировка университетов по максимальному рейтингу программ
         grouped_list = list(grouped.values())
         grouped_list.sort(key=lambda x: max(p["ranking"] for p in x["programs"]) if x["programs"] else 0, reverse=True)
 
-        # Пагинация университетов
-        offset = filters.page * filters.page_size
+        offset = (filters.page - 1) * filters.page_size
         paginated_grouped_list = grouped_list[offset:offset + filters.page_size]
 
-        # Формирование ответа
         return [
             UniversityWithProgramsOut(
                 **{
@@ -420,6 +423,4 @@ async def get_grouped_programs(
             )
             for v in paginated_grouped_list
         ]
-
-
 
