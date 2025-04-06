@@ -250,10 +250,11 @@ W_dorm = 0.1  # Наличие общежития
 W_gov = 0.1   # Государственный вуз
 W_price = 0.05  # Цена
 W_fill = 0.05  # Заполненность
+W_free = 0.1  # Наличие бюджетных мест (добавляем новый вес, корректируем другие если нужно)
 
 def compute_program_score(program: Program, filters: ProgramFilterParams) -> float:
     """
-    Вычисляет рейтинг программы с учетом всех параметров из ProgramFilterParams.
+    Вычисляет рейтинг программы с учетом всех параметров из ProgramFilterParams, включая free_places.
     """
     # ===== P_ex (экзамен) =====
     try:
@@ -307,8 +308,24 @@ def compute_program_score(program: Program, filters: ProgramFilterParams) -> flo
     elif filters.is_free is False and price == 0:
         P_price *= 0.5
 
+    # ===== P_free (наличие бюджетных мест) =====
+    try:
+        free_places = int(program.forms[0]["free_places"])
+    except (ValueError, TypeError, KeyError):
+        free_places = 0
+
+    # Если ищут бюджетное (is_free=True) или не указано (is_free=None), наличие мест повышает рейтинг
+    if filters.is_free is True or filters.is_free is None:
+        if free_places > 0:
+            # Масштабируем: больше мест -> выше рейтинг, но не более 1
+            P_free = min(1.0, free_places / 50)  # Например, 50 мест = максимум 1
+        else:
+            P_free = 0
+    else:  # filters.is_free is False (ищут платное)
+        P_free = 0  # Бюджетные места не влияют на рейтинг
+
     # ===== P_fill (заполненность) =====
-    total_fields = 7
+    total_fields = 8  # Увеличиваем на 1 из-за free_places
     filled = 0
     if program.direction and (not filters.direction or filters.direction.lower() in program.direction.lower()):
         filled += 1
@@ -328,6 +345,8 @@ def compute_program_score(program: Program, filters: ProgramFilterParams) -> flo
         filled += 1
     if "price" in program.forms[0] and (filters.max_price is None or price <= abs(filters.max_price)):
         filled += 1
+    if "free_places" in program.forms[0] and free_places > 0:
+        filled += 1
     P_fill = filled / total_fields
 
     # Итоговый рейтинг
@@ -338,6 +357,7 @@ def compute_program_score(program: Program, filters: ProgramFilterParams) -> flo
         + W_gov * P_gov
         + W_price * P_price
         + W_fill * P_fill
+        + W_free * P_free  # Добавляем вклад бюджетных мест
     )
     return res
 
