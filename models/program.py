@@ -30,4 +30,4 @@ class Program(Base):
     scores: Mapped[Optional[List[List[str]]]] = mapped_column(JSONB, nullable=True)
     forms: Mapped[Optional[List[Dict]]] = mapped_column(JSONB, nullable=True)
 
-    university: Mapped["University"] = relationship("University", back_populates="program")
+    university: Mapped["University"] = relationship("University", back_populates="programs")

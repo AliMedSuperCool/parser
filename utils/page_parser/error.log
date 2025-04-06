@@ -1,0 +1,234 @@
+2025-03-14 05:32:11,688 - ERROR - Ошибка на итерации 453 https://tabiturient.ru/vuzu/rgatu/proxodnoi: HTTPConnectionPool(host='tabiturient.ru', port=80): Max retries exceeded with url: /vuzu/rgatu/proxodnoi/?accept=text%2Fhtml%2Capplication%2Fxhtml%2Bxml%2Capplication%2Fxml%3Bq%3D0.9%2Cimage%2Favif%2Cimage%2Fwebp%2Cimage%2Fapng%2C%2A%2F%2A%3Bq%3D0.8%2Capplication%2Fsigned-exchange%3Bv%3Db3%3Bq%3D0.9&accept-encoding=gzip%2C+deflate%2C+br&accept-language=uk%2Cen-US%3Bq%3D0.9%2Cen%3Bq%3D0.8%2Cru%3Bq%3D0.7&sec-ch-ua=%22Google+Chrome%22%3Bv%3D%2289%22%2C+%22Chromium%22%3Bv%3D%2289%22%2C+%22%3BNot+A+Brand%22%3Bv%3D%2299%22&sec-ch-ua-mobile=%3F0&sec-fetch-dest=document&sec-fetch-mode=navigate&sec-fetch-site=none&sec-fetch-user=%3F1&upgrade-insecure-requests=1&user-agent=Mozilla%2F5.0+%28X11%3B+Linux+x86_64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F89.0.4389.90+Safari%2F537.36 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x79471144eb70>, 'Connection to tabiturient.ru timed out. (connect timeout=None)'))
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: [Errno 110] Connection timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 493, in _make_request
+    conn.request(
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 445, in request
+    self.endheaders()
+  File "/usr/lib/python3.12/http/client.py", line 1331, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.12/http/client.py", line 1091, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.12/http/client.py", line 1035, in send
+    self.connect()
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 276, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 207, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPConnection object at 0x79471144eb70>, 'Connection to tabiturient.ru timed out. (connect timeout=None)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='tabiturient.ru', port=80): Max retries exceeded with url: /vuzu/rgatu/proxodnoi/?accept=text%2Fhtml%2Capplication%2Fxhtml%2Bxml%2Capplication%2Fxml%3Bq%3D0.9%2Cimage%2Favif%2Cimage%2Fwebp%2Cimage%2Fapng%2C%2A%2F%2A%3Bq%3D0.8%2Capplication%2Fsigned-exchange%3Bv%3Db3%3Bq%3D0.9&accept-encoding=gzip%2C+deflate%2C+br&accept-language=uk%2Cen-US%3Bq%3D0.9%2Cen%3Bq%3D0.8%2Cru%3Bq%3D0.7&sec-ch-ua=%22Google+Chrome%22%3Bv%3D%2289%22%2C+%22Chromium%22%3Bv%3D%2289%22%2C+%22%3BNot+A+Brand%22%3Bv%3D%2299%22&sec-ch-ua-mobile=%3F0&sec-fetch-dest=document&sec-fetch-mode=navigate&sec-fetch-site=none&sec-fetch-user=%3F1&upgrade-insecure-requests=1&user-agent=Mozilla%2F5.0+%28X11%3B+Linux+x86_64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F89.0.4389.90+Safari%2F537.36 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x79471144eb70>, 'Connection to tabiturient.ru timed out. (connect timeout=None)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/parser.py", line 44, in parse
+    html_content = get_html_content(link_proxodnoi)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/parser.py", line 33, in get_html_content
+    req = requests.get(url, headers)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/api.py", line 73, in get
+    return request("get", url, params=params, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/sessions.py", line 724, in send
+    history = [resp for resp in gen]
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/sessions.py", line 265, in resolve_redirects
+    resp = self.send(
+           ^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/adapters.py", line 688, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPConnectionPool(host='tabiturient.ru', port=80): Max retries exceeded with url: /vuzu/rgatu/proxodnoi/?accept=text%2Fhtml%2Capplication%2Fxhtml%2Bxml%2Capplication%2Fxml%3Bq%3D0.9%2Cimage%2Favif%2Cimage%2Fwebp%2Cimage%2Fapng%2C%2A%2F%2A%3Bq%3D0.8%2Capplication%2Fsigned-exchange%3Bv%3Db3%3Bq%3D0.9&accept-encoding=gzip%2C+deflate%2C+br&accept-language=uk%2Cen-US%3Bq%3D0.9%2Cen%3Bq%3D0.8%2Cru%3Bq%3D0.7&sec-ch-ua=%22Google+Chrome%22%3Bv%3D%2289%22%2C+%22Chromium%22%3Bv%3D%2289%22%2C+%22%3BNot+A+Brand%22%3Bv%3D%2299%22&sec-ch-ua-mobile=%3F0&sec-fetch-dest=document&sec-fetch-mode=navigate&sec-fetch-site=none&sec-fetch-user=%3F1&upgrade-insecure-requests=1&user-agent=Mozilla%2F5.0+%28X11%3B+Linux+x86_64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F89.0.4389.90+Safari%2F537.36 (Caused by ConnectTimeoutError(<urllib3.connection.HTTPConnection object at 0x79471144eb70>, 'Connection to tabiturient.ru timed out. (connect timeout=None)'))
+2025-03-14 06:09:24,007 - ERROR - Ошибка на итерации 463 https://tabiturient.ru/vuzu/kosygin/proxodnoi: HTTPSConnectionPool(host='tabiturient.ru', port=443): Read timed out. (read timeout=None)
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 741, in connect
+    sock_and_verified = _ssl_wrap_socket_and_match_hostname(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 920, in _ssl_wrap_socket_and_match_hostname
+    ssl_sock = ssl_wrap_socket(
+               ^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/ssl_.py", line 460, in ssl_wrap_socket
+    ssl_sock = _ssl_wrap_socket_impl(sock, context, tls_in_tls, server_hostname)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/ssl_.py", line 504, in _ssl_wrap_socket_impl
+    return ssl_context.wrap_socket(sock, server_hostname=server_hostname)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/ssl.py", line 455, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/ssl.py", line 1042, in _create
+    self.do_handshake()
+  File "/usr/lib/python3.12/ssl.py", line 1320, in do_handshake
+    self._sslobj.do_handshake()
+TimeoutError: [Errno 110] Connection timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/retry.py", line 474, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/util.py", line 39, in reraise
+    raise value
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 466, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=conn.timeout)
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 367, in _raise_timeout
+    raise ReadTimeoutError(
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='tabiturient.ru', port=443): Read timed out. (read timeout=None)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/parser.py", line 45, in parse
+    data = parse_page(html_content)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/page_parser/parser.py", line 18, in parse_page
+    programs = parse_programs_info(soup)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/page_parser/parse_programs_info.py", line 148, in parse_programs_info
+    parsed_card = parse_program_card(extracted_url, extracted_number)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/page_parser/parse_programs_info.py", line 74, in parse_program_card
+    r = requests.post(
+        ^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/adapters.py", line 713, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='tabiturient.ru', port=443): Read timed out. (read timeout=None)
+2025-03-15 14:03:10,207 - ERROR - Ошибка на итерации 0 https://tabiturient.ru/vuzu/eltech/proxodnoi/: HTTPSConnectionPool(host='tabiturient.ru', port=443): Max retries exceeded with url: /ajax/ajshowmoreinfof2.php (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7bf298000c50>, 'Connection to tabiturient.ru timed out. (connect timeout=None)'))
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: [Errno 110] Connection timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 1093, in _validate_conn
+    conn.connect()
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 704, in connect
+    self.sock = sock = self._new_conn()
+                       ^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connection.py", line 207, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<urllib3.connection.HTTPSConnection object at 0x7bf298000c50>, 'Connection to tabiturient.ru timed out. (connect timeout=None)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/adapters.py", line 667, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='tabiturient.ru', port=443): Max retries exceeded with url: /ajax/ajshowmoreinfof2.php (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7bf298000c50>, 'Connection to tabiturient.ru timed out. (connect timeout=None)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/user/Desktop/PoVuzam/parser.py", line 45, in parse
+    data = parse_page(html_content)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/page_parser/parser.py", line 18, in parse_page
+    programs = parse_programs_info(soup)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/page_parser/parse_programs_info.py", line 148, in parse_programs_info
+    parsed_card = parse_program_card(extracted_url, extracted_number)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/page_parser/parse_programs_info.py", line 74, in parse_program_card
+    r = requests.post(
+        ^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/Desktop/PoVuzam/venv/lib/python3.12/site-packages/requests/adapters.py", line 688, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPSConnectionPool(host='tabiturient.ru', port=443): Max retries exceeded with url: /ajax/ajshowmoreinfof2.php (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7bf298000c50>, 'Connection to tabiturient.ru timed out. (connect timeout=None)'))
