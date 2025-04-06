@@ -148,6 +148,7 @@ class ProgramShortOut(BaseModel):
     profile: str
     program_code: str
     faculty: str
+    exams: Optional[List[List[str]]] = None
     forms: Optional[List[Dict]]  # Включает баллы, цену, форму обучения
 
     class Config:
@@ -162,6 +163,8 @@ class UniversityWithProgramsOut(BaseModel):
     rating: Optional[int]
     dormitory: Optional[DormitoryOut]
     programs: List[ProgramShortOut]
+    phone_admission: Optional[List[str]]
+    email_admission: Optional[List[str]]
 
     class Config:
         from_attributes = True
@@ -176,6 +179,7 @@ class ProgramFilterParams(BaseModel):
     max_price: Optional[int] = Field(None, description="Максимальная цена (отрицательная)")
     is_goverment: Optional[bool] = Field(None, description="Гос или не гос")
     region: Optional[str] = Field(None, description="Регион (по university.geolocation)")
+    user_exams: Optional[List[str]] = Field(None, description="Список экзаменов пользователя")  # <-- новое поле
     page_size: int = Field(5, ge=1, le=50, description="Сколько программ вернуть")
     page: int = Field(1, ge=1, description="Пропустить программ")
 
@@ -306,37 +310,28 @@ from sqlalchemy import exists, select
 
 from sqlalchemy import exists, select
 
-@router.get("/grouped-programs", response_model=List[UniversityWithProgramsOut])
+@router.post("/grouped-programs", response_model=List[UniversityWithProgramsOut])
 async def get_grouped_programs(
     filters: ProgramFilterParams = Depends(),
     session: Session = Depends(get_db_session),
 ):
     with session() as session:
-        no_filters_applied = all(
-            getattr(filters, field) is None
-            for field in filters.__fields__
-            if field not in ["page", "page_size"]
-        )
-
-        if no_filters_applied:
-            filters.region = "Москва"
-            filters.is_free = True
-
-        # Базовый запрос с присоединением университета и общежития
+        # 1) Формируем stmt с базовыми условиями
+        #    (пример, как у вас было в коде выше)
         stmt = select(Program).options(
             joinedload(Program.university).joinedload(University.dormitory)
         )
 
         conditions = []
-
+        # Пример логики, как у вас выше
         if filters.direction:
             conditions.append(Program.direction.ilike(f"%{filters.direction}%"))
 
-        # Подзапрос для разворачивания JSONB массива forms
         forms_subquery = (
             select(
                 Program.id.label("program_id"),
-                func.jsonb_extract_path_text(func.jsonb_array_elements(Program.forms), "education_form2").label("education_form2"),
+                func.jsonb_extract_path_text(func.jsonb_array_elements(Program.forms), "education_form2").label(
+                    "education_form2"),
                 func.jsonb_extract_path_text(func.jsonb_array_elements(Program.forms), "score").label("score"),
                 func.jsonb_extract_path_text(func.jsonb_array_elements(Program.forms), "price").label("price")
             )
@@ -400,7 +395,8 @@ async def get_grouped_programs(
                         and_(
                             forms_subquery.c.program_id == Program.id,
                             forms_subquery.c.score.op('~')('^[0-9]+$'),
-                            func.nullif(forms_subquery.c.score, "Только платное").cast(Integer) <= (filters.user_score + 10)
+                            func.nullif(forms_subquery.c.score, "Только платное").cast(Integer) <= (
+                                        filters.user_score + 10)
                         )
                     )
                 )
@@ -435,9 +431,38 @@ async def get_grouped_programs(
         if conditions:
             stmt = stmt.where(and_(*conditions))
 
+        # 2) Забираем программы из БД
         result = session.execute(stmt)
         programs = result.scalars().all()
 
+        # 3) Дополнительная фильтрация по exam'ам (если пользователь передал user_exams)
+        if filters.user_exams:
+            user_exams_set = set(e.strip().upper() for e in filters.user_exams)  # приведение к верхнему регистру, если надо
+
+            def check_exams(program_exams: List[List[str]]) -> bool:
+                """
+                Возвращает True, если exams программы являются подмножеством user_exams:
+                  Для каждого подмассива (слота) хотя бы один экзамен есть у пользователя.
+                """
+                for slot in program_exams:
+                    # slot – например ['Ф'] или ['ИКТ', 'Ф']
+                    # если в user_exams нет пересечения, значит программа не подходит
+                    slot_upper = [ex.upper() for ex in slot]  # приводим к upper, если нужно
+                    if not any(exam in user_exams_set for exam in slot_upper):
+                        return False
+                return True
+
+            filtered_programs = []
+            for prog in programs:
+                # prog.exams – допустим это уже Python-список списков (если у вас в модели Program.exams = Column(JSONB))
+                # если нужно, парсим вручную, например: program_exams = json.loads(prog.exams)
+                program_exams = prog.exams or []
+                if check_exams(program_exams):
+                    filtered_programs.append(prog)
+
+            programs = filtered_programs
+
+        # 4) Считаем рейтинг (compute_program_score), сортируем
         program_with_score = []
         for prog in programs:
             score = compute_program_score(prog, filters)
@@ -445,6 +470,7 @@ async def get_grouped_programs(
 
         program_with_score.sort(key=lambda x: x[1], reverse=True)
 
+        # 5) Группируем по университетам
         grouped: Dict[str, Dict] = {}
         for prog, score in program_with_score:
             uni = prog.university
@@ -459,24 +485,31 @@ async def get_grouped_programs(
                     "dormitory": uni.dormitory,
                     "programs": []
                 }
-            # Фильтруем forms, чтобы включать только те, что соответствуют education_form
+            # можно фильтровать forms по education_form
             filtered_forms = prog.forms
             if filters.education_form:
                 filtered_forms = [
                     form for form in prog.forms
                     if form.get("education_form2", "").lower().find(filters.education_form.lower()) != -1
                 ]
+
             prog_dict = ProgramShortOut.model_validate(prog).model_dump()
-            prog_dict["forms"] = filtered_forms  # Заменяем forms на отфильтрованные
+            prog_dict["forms"] = filtered_forms
             prog_dict["ranking"] = score
             grouped[uni.long_name]["programs"].append(prog_dict)
 
+        # 6) Сортируем университеты по максимальному рангу внутри
         grouped_list = list(grouped.values())
-        grouped_list.sort(key=lambda x: max(p["ranking"] for p in x["programs"]) if x["programs"] else 0, reverse=True)
+        grouped_list.sort(
+            key=lambda x: max(p["ranking"] for p in x["programs"]) if x["programs"] else 0,
+            reverse=True
+        )
 
+        # 7) Пагинация
         offset = (filters.page - 1) * filters.page_size
-        paginated_grouped_list = grouped_list[offset:offset + filters.page_size]
+        paginated_grouped_list = grouped_list[offset : offset + filters.page_size]
 
+        # 8) Возвращаем результат
         return [
             UniversityWithProgramsOut(
                 **{
