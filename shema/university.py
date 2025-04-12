@@ -1,39 +1,34 @@
-from typing import Optional
+from typing import Optional, List
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
+
+from shema.dormitory import DormitoryReturn
+from shema.program import ProgramShortReturn
 
 
-class UniversityShema(BaseModel):
-    scores: Optional[float] = None
-    direction: Optional[str] = None
-    education_form: Optional[str] = None
-    is_paid: Optional[bool] = None  # Платное или бесплатное обучение (True - платное, False - бесплатное)
-    is_government: Optional[bool] = None  # Гос/не гос вуз (True - государственный, False - негосударственный)
-    region: Optional[str] = None  # Регион (например, "Московская область", "Нижегородская область" и т.д.)
-    price: Optional[float] = None  # Регион (например, "Московская область", "Нижегородская область" и т.д.)
+class UniversityScheme(BaseModel):
+    long_name: Optional[str] = Field(None, description="Полное название вуза")
+    short_name: Optional[str] = Field(None, description="короткое название вуза")
 
     class Config:
         from_attributes = True
 
 
-# class TaskShema(BaseModel):
-#     id: int = Field(include=False, default=None)
-#     name: str | None = None
-#     pomodoro_count: int | None = None
-#     category_id: int
-#     user_id: int
-#
-#     class Config:
-#         from_attributes = True
-#
-#     @model_validator(mode="after")
-#     def check_name_or_count(self):
-#         if self.name is None and self.pomodoro_count is None:
-#             raise ValueError("Task name or pomodoro count must be set")
-#         return self
-#
-#
-# class TaskCreateShema(BaseModel):
-#     name: str | None = None
-#     pomodoro_count: int | None = None
-#     category_id: int = Field(alias='category_id')
+class UniversityProgramsReturn(BaseModel):
+    id: int
+    long_name: str
+    short_name: str
+    geolocation: Optional[str]
+    is_goverment: Optional[bool]
+    rating: Optional[int]
+    dormitory: Optional[bool]
+    army: Optional[bool]
+    programs: List[ProgramShortReturn]
+    # phone_admission: Optional[List[str]]
+    # email_admission: Optional[List[str]]
+
+    class Config:
+        from_attributes = True
+
+
+

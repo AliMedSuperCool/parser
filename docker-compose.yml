@@ -23,10 +23,19 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/povuzam
+      - DATABASE_URL=postgresql+psycopg2://postgres:password@db:5432/povuzam
+
     command: >
-      sh -c "poetry run alembic upgrade head &&
-             poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+      sh -c "
+        until pg_isready -h db -p 5432; do
+          echo '⏳ Waiting for Postgres...';
+          sleep 1;
+        done &&
+        echo '✅ Postgres is up - running migrations...' &&
+        poetry run alembic upgrade head &&
+        echo '🚀 Starting app...' &&
+        poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      "
 
   init-db:
     build: .
@@ -35,6 +44,13 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:password@db:5432/povuzam
     command: >
-      sh -c "poetry run python utils/add_data_to_db.py"
+      sh -c "
+        until pg_isready -h db -p 5432; do
+          echo '⏳ Waiting for Postgres...';
+          sleep 1;
+        done &&
+        poetry run python utils/add_data_to_db.py
+      "
+
 volumes:
   postgres_data:

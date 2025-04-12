@@ -1,5 +1,5 @@
 from typing import Optional, List
-from sqlalchemy import ForeignKey, Text, Float, String, ARRAY, TEXT
+from sqlalchemy import ForeignKey, Text, Float, String, ARRAY, TEXT, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
@@ -25,8 +25,17 @@ class University(Base):
     email_general: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
     email_admission: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
     army: Mapped[bool] = mapped_column(nullable=True)
+    has_dormitory: Mapped[bool] = mapped_column(nullable=True)
     comment: Mapped[str] = mapped_column(Text, nullable=True)
-    # dormitory = relationship("Dormitory", back_populates="university", uselist=False)
+
     dormitory: Mapped["Dormitory"] = relationship("Dormitory", uselist=False, back_populates="university",
                                                   lazy="selectin")
     programs: Mapped[List["Program"]] = relationship("Program", back_populates="university", lazy="selectin")
+
+    __table_args__ = (
+        Index("ix_university_form_long_name", "long_name"),
+        Index("ix_university_short_name", "short_name"),
+        Index("ix_university_is_goverment", "is_goverment"),
+        Index("ix_university_army", "army"),
+        Index("ix_university_has_dormitory", "has_dormitory"),
+    )
