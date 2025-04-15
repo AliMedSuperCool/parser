@@ -1,20 +1,35 @@
 .DEFAULT_GOAL := help
 
-
 HOST ?= 0.0.0.0
 PORT ?= 8000
 ENV_FILE ?= .local.env
 DOWNGRADE_VERSION ?= base
-
-
 SRC := handlers/
+
 ## Lint code
 lint:
-	@echo "Lint code..."
-	ruff check $(SRC) --fix
+	@echo "Linting code..."
+	poetry run ruff check $(SRC) --fix
 
+## Format code using Black + isort
+format:
+	@echo "🎨 Formatting with black and isort..."
+	poetry run black $(SRC)
+	poetry run isort $(SRC)
 
+## Check code style without fixing (flake8, mypy, black --check, isort --check)
+style-check:
+	@echo "🔍 Checking with flake8..."
+	poetry run flake8 $(SRC)
+	@echo "🧠 Type checking with mypy..."
+	poetry run mypy $(SRC)
+	@echo "🕵️ Black format check..."
+	poetry run black --check $(SRC)
+	@echo "🧹 isort check..."
+	poetry run isort --check $(SRC)
 
+## All checks and formatting
+check: lint format style-check
 ## Install Python dependencies
 install:
 	@echo "Installing python dependencies..."
@@ -26,6 +41,7 @@ activate:
 	@echo "Activating virtual environment..."
 	poetry shell
 
+## Add dependency
 add:
 	@echo "Installing dependency $(LIBRARY)"
 	poetry add $(LIBRARY)
@@ -33,44 +49,56 @@ add:
 ## Setup project
 setup: install activate
 
+## Run Docker containers
 run-docker:
-	docker-compose up -d
+	docker compose up -d
 
-run-back:
-	@echo "$$(tput bold)Starting backend:$$(tput sgr0)"
-	#poetry run fastapi dev main.py --host $(HOST) --reload --port $(PORT) --reload
-	poetry run uvicorn main:app --host $(HOST) --reload --port $(PORT) --reload --env-file $(ENV_FILE)
-
-run: run-docker run-back
-
-
+## Stop Docker containers
 stop-docker:
-	docker
+	docker compose down
 
-## Migrate
+## Build containers
+build-docker:
+	docker compose build
+## Rebuild Docker containers
+rebuild-docker:
+	docker compose down -v
+	docker compose build
+	docker compose up -d
+
+
+### Run backend using Poetry
+#run-back:
+#	@echo "$$(tput bold)Starting backend:$$(tput sgr0)"
+#	poetry run uvicorn main:app --host $(HOST) --port $(PORT) --reload --env-file $(ENV_FILE)
+#
+### Run full backend environment
+#run: run-docker run-back
+
+## Migrations
 migrate-create:
-	alembic revision --autogenerate -m $(MIGRATION)
+	docker compose exec app alembic revision --autogenerate -m "$(MIGRATION)"
 
 migrate-apply:
-	alembic upgrade head
+	docker compose exec app alembic upgrade head
 
+
+## Show migration history
 migrate-history:
-	alembic history --verbose
+	@echo "📚 Showing migration history..."
+	#alembic history --verbose
+	docker compose exec app alembic history --verbose
+
 
 migrate-downgrade:
-	alembic downgrade $(DOWNGRADE_VERSION)
+	docker compose exec app alembic downgrade $(DOWNGRADE_VERSION)
 
-
-
+## Run tests
 test:
 	@echo "Running tests..."
 	poetry run pytest tests/ -v
 
 
-
-## Docker
-build:
-	docker compose up
 
 ## Clean cache files
 clean:
@@ -116,4 +144,10 @@ help:
 		} \
 		printf "\n"; \
 	}' \
-	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
+	| more $(shell test $$(uname) = Darwin && echo '--no-init --raw-control-chars')
+
+
+## Initialize the database with test data
+init-db:
+	@echo "⏳ Initializing DB with data..."
+	docker compose exec app poetry run python utils/add_data_to_db.py

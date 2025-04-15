@@ -1,13 +1,12 @@
 from typing import List
-from sqlalchemy import select, and_, Integer, func, or_, exists, case
-from sqlalchemy.orm import aliased
 
-from models import Program, Form
-from shema import ProgramFilterParams
+from sqlalchemy import and_, or_
+
+from models import Form, Program
+from shema import UniversityFilterParams
 
 
-
-def apply_program_filters(stmt, filters: ProgramFilterParams) -> List:
+def apply_program_filters(stmt, filters: UniversityFilterParams) -> List:
     conditions = []
 
     # ✅ Прямой join без aliased(), если alias не нужен
@@ -20,12 +19,11 @@ def apply_program_filters(stmt, filters: ProgramFilterParams) -> List:
         conditions.append(Form.education_form2 == filters.education_form)
 
     if filters.is_free is True:
-        conditions.append(Form.score.isnot(None))  # быстрее, чем сравнение с "Только платное"
+        conditions.append(
+            Form.score.isnot(None)
+        )  # быстрее, чем сравнение с "Только платное"
     elif filters.is_free is False:
-        conditions.append(or_(
-            Form.score.is_(None),
-            Form.price.isnot(None)
-        ))
+        conditions.append(or_(Form.score.is_(None), Form.price.isnot(None)))
 
     if filters.user_score is not None:
         conditions.append(Form.score <= filters.user_score + 7)
@@ -34,11 +32,6 @@ def apply_program_filters(stmt, filters: ProgramFilterParams) -> List:
         conditions.append(Form.price <= abs(filters.max_price))
 
     return stmt.where(and_(*conditions))
-
-
-
-
-
 
 
 # def build_forms_subquery():

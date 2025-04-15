@@ -11,5 +11,3 @@ async def ping_db():
 @router.get("/app")
 async def ping_app():
     return {"message": "app is working"}
-
-

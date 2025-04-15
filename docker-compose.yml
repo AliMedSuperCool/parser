@@ -14,6 +14,12 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  cache:
+    image: redis:8.0-M02-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+
   app:
     build: .
     ports:
@@ -36,21 +42,5 @@ services:
         echo '🚀 Starting app...' &&
         poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
       "
-
-  init-db:
-    build: .
-    depends_on:
-      - db
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/povuzam
-    command: >
-      sh -c "
-        until pg_isready -h db -p 5432; do
-          echo '⏳ Waiting for Postgres...';
-          sleep 1;
-        done &&
-        poetry run python utils/add_data_to_db.py
-      "
-
 volumes:
   postgres_data:

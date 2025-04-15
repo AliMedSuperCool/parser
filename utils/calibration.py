@@ -1,7 +1,7 @@
 import time
 
 from models import Program
-from shema import ProgramFilterParams
+from shema import UniversityFilterParams
 
 from functools import lru_cache
 from typing import Optional
@@ -157,7 +157,7 @@ def safe_int(val: Optional[str | int]) -> Optional[int]:
     except (TypeError, ValueError):
         return None
 
-def compute_program_score(program: Program, filters: ProgramFilterParams) -> float:
+def compute_program_score(program: Program, filters: UniversityFilterParams) -> float:
     weights = get_weight_config()
     form = program.forms[0] if program.forms else None
 
