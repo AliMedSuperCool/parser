@@ -28,6 +28,7 @@ services:
       - .:/app
     depends_on:
       - db
+      - cache
     environment:
       - DATABASE_URL=postgresql+psycopg2://postgres:password@db:5432/povuzam
 

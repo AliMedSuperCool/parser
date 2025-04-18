@@ -41,7 +41,7 @@ class UniversityFilterParams(BaseModel):
     short_name: Optional[str] = Field(None, description="Вуз короткое название", examples=['КАГМС'])
 
     direction: Optional[str] = Field(None, description="Направление", examples=['Экономика'])
-    education_form: Optional[Literal["Очная", "Заочная", "Очно-заочная"]] = Field(None,
+    education_form: Optional[Literal["Очная", "Заочная", "Очно-заочная","ДО"]] = Field(None,
                                                                                   description="Форма обучения",
                                                                                   examples=['очная', 'заочная',
                                                                                             'очно-заочная'])
@@ -67,7 +67,7 @@ def get_filter_params(
     long_name: Optional[str] = Query(None),
     short_name: Optional[str] = Query(None),
     direction: Optional[str] = Query(None),
-    education_form: Optional[Literal["Очная", "Заочная", "Очно-заочная"]] = Query(None),
+    education_form: Optional[Literal["Очная", "Заочная", "Очно-заочная","ДО"]] = Query(None),
     is_free: Optional[bool] = Query(None),
     user_score: Optional[int] = Query(None),
     max_price: Optional[int] = Query(None),

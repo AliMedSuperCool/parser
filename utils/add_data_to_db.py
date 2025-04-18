@@ -89,7 +89,7 @@ with Session() as session:
     session.commit()
 
     print("\n📘 Обработка программ...")
-    programs = pd.read_csv('data/tabiturient/processed_data/programs_cleaned.csv')
+    programs = pd.read_csv('data/tabiturient/all/programs_combined.csv')
 
     for _, program in programs.iterrows():
         uni_id = session.execute(

@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     # DB_DRIVER: str = 'postgresql+asyncpg'  # Асинхронный драйвер (если нужен позже)
     DATABASE_URL: str = os.getenv("DATABASE_URL")  # Добавляем возможность использовать полную строку
 
-    CACHE_HOST: str = 'localhost'
+    CACHE_HOST: str = os.getenv("CACHE_HOST", "cache")
     CACHE_PORT: int = 6379
     CACHE_DB: int = 0
 
