@@ -107,8 +107,6 @@ with Session() as session:
                 Program.profile == program.profile,
                 Program.program_code == program.program_code,
                 Program.faculty  == program.faculty,
-                Program.forms == program.forms,
-                Program.exams == program.exams,
             ))
         ).scalar_one_or_none()
 
