@@ -48,6 +48,8 @@ class UniversityCache:
     def set_university(self, filters: dict, universities: list[UniversityProgramsReturn], ttl: int = 60):
         key = self._make_key(filters)
         universities_json = [u.model_dump_json() for u in universities]  # ✅ model_dump_json
+        if not universities_json:
+            return
         with self.redis as redis:
             redis.lpush(key, *universities_json)
             redis.expire(key, ttl)
