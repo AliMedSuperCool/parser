@@ -59,8 +59,12 @@ with Session() as session:
                 has_dormitory=vuz.obsh
             ))
 
-    session.commit()
-
+    try:
+        session.commit()
+        print("\n✅ Все изменения успешно сохранены.")
+    except SQLAlchemyError as e:
+        print(f"❌ Ошибка при финальном коммите: {e}")
+        session.rollback()
 
     print("\n🏢 Обработка общежитий...")
     obshs = pd.read_csv('data/tabiturient/all/osbh_all.csv')
@@ -87,7 +91,12 @@ with Session() as session:
                 rating=float(obsh.rating) if obsh.rating else None,
             ))
 
-    session.commit()
+    try:
+        session.commit()
+        print("\n✅ Все изменения успешно сохранены.")
+    except SQLAlchemyError as e:
+        print(f"❌ Ошибка при финальном коммите: {e}")
+        session.rollback()
 
     print("\n📘 Обработка программ...")
     programs = pd.read_csv('data/tabiturient/all/programs_combined.csv')
@@ -107,7 +116,7 @@ with Session() as session:
                 Program.direction == program.direction,
                 Program.profile == program.profile,
                 Program.program_code == program.program_code,
-                Program.faculty  == program.faculty,
+                Program.faculty == program.faculty,
             ))
         ).scalar_one_or_none()
 
