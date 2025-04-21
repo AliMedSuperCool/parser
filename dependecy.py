@@ -1,30 +1,24 @@
-# from fastapi import Depends, Request, Security, security, HTTPException
-# from sqlalchemy.orm import Session
-# from database import get_db_session
-# from repository import TaskRepository, TaskCache, UserRepository
-# from service import TaskService, UserService, AuthService
-# from settings import Settings
-#
-#
-# def get_tasks_repository(db_session: Session = Depends(get_db_session)) -> TaskRepository:
-#     return TaskRepository(db_session=db_session)
-#
-#
-#
-# def get_user_repository(db_session: Session = Depends(get_db_session)) -> UserRepository:
-#     return UserRepository(db_session=db_session)
-#
-#
-# def get_tasks_service(
-#         task_repository: TaskRepository = Depends(get_tasks_repository),
-# ) -> TaskService:
-#     return TaskService(
-#         task_repository=task_repository,
-#     )
-#
-#
-# def get_users_service(
-#         user_repository: UserRepository = Depends(get_user_repository),
-# ) -> UserService:
-#     return UserService(user_repository=user_repository)
+from fastapi import Depends, Request, Security, security, HTTPException
+from sqlalchemy.orm import Session
 
+from cache import get_redis_connection
+from database import get_db_session
+from repository import UniversityRepository, UniversityCache
+from service import UniversityService
+from settings import Settings
+
+
+def get_university_cache_repository() -> UniversityCache:
+    redis_connection = get_redis_connection()
+    return UniversityCache(redis_connection)
+
+
+def get_university_repository(db_session: Session = Depends(get_db_session)) -> UniversityRepository:
+    return UniversityRepository(db_session=db_session)
+
+
+def get_university_service(
+        university_repository: UniversityRepository = Depends(get_university_repository),
+        university_cache: UniversityCache = Depends(get_university_cache_repository),
+) -> UniversityService:
+    return UniversityService(university_repository=university_repository, university_cache=university_cache)

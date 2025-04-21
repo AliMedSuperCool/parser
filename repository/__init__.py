@@ -1,4 +1,4 @@
-# from repository.task_repository import TaskRepository
-# from repository.user_repository import UserRepository
-#
-# __all__ = ['TaskRepository', 'TaskCache', 'UserRepository']
+from repository.university_repository import UniversityRepository
+from repository.cache_university import UniversityCache
+
+__all__ = ['UniversityRepository', 'UniversityCache']
