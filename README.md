@@ -71,7 +71,9 @@ make test         # Запуск тестов
 
 ### 📡 Адрес запроса:
 ```
+http://localhost:8000/docs
 GET http://localhost:8000/university-filtering
+
 ```
 
 ### 🔹 Пример запроса (GET `/university-filtering`):
