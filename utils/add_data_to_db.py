@@ -61,6 +61,7 @@ with Session() as session:
 
     session.commit()
 
+
     print("\n🏢 Обработка общежитий...")
     obshs = pd.read_csv('data/tabiturient/all/osbh_all.csv')
     for _, obsh in obshs.iterrows():

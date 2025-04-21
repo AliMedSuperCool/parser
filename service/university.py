@@ -3,6 +3,7 @@ from typing import Dict
 
 from pydantic import ValidationError
 
+from exception import UniversitiesNotFound
 from models import Program
 from repository import UniversityRepository, UniversityCache
 from shema import UniversityFilterParams, UniversityProgramsReturn, \
@@ -47,6 +48,8 @@ class UniversityService:
             return cached
 
         programs = self.university_repository.filtering(filters)
+        if not programs:
+            raise UniversitiesNotFound
 
         if filters.user_exams:
             self.user_exams_set = set([e.strip().upper() for e in filters.user_exams])

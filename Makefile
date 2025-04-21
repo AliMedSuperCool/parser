@@ -49,23 +49,35 @@ add:
 ## Setup project
 setup: install activate
 
-## Run Docker containers
-run-docker:
+
+
+# Start Docker containers
+docker-start:
+	docker compose start
+
+# Stop Docker containers
+docker-stop:
+	docker compose stop
+
+docker-up:
 	docker compose up -d
 
-## Stop Docker containers
-stop-docker:
+docker-down:
 	docker compose down
 
 ## Build containers
-build-docker:
+docker-build:
 	docker compose build
-## Rebuild Docker containers
-rebuild-docker:
-	docker compose down -v
-	docker compose build
-	docker compose up -d
 
+## Rebuild Docker containers
+docker-rebuild:
+	docker compose down -v
+	$(MAKE) docker-build
+	$(MAKE) docker-up
+
+# Remove project-related images
+docker-clean:
+	docker compose down --volumes --rmi all
 
 ### Run backend using Poetry
 #run-back:
@@ -96,7 +108,7 @@ migrate-downgrade:
 ## Run tests
 test:
 	@echo "Running tests..."
-	poetry run pytest tests/ -v
+	docker compose exec app poetry run pytest tests/ -v
 
 
 
